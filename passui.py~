@@ -1,0 +1,110 @@
+from gi.repository import Gtk
+from pypass import PyPass
+
+class PassUI:
+
+    #New Button Click Handler
+    def btnNew_clicked(self, button):
+        print 'btnNew_clicked'
+
+    #Show And Hide Password Button Click Handler
+    def btnShowPassword_clicked(self, button):
+        print 'btnShowPassword_clicked'
+
+    #Copy the Password to the Clipboard Button Click Handler
+    def btnCopyToClipboard_clicked(self, button):
+        print 'btnCopyToClipboard_clicked'
+
+    #Delete Button Click Handler
+    def btnDelete_clicked(self, button):
+        print 'btnDelete_clicked'
+
+    #Update Button Click Handler
+    def btnUpdate_clicked(self, button):
+        print 'btnUpdate_clicked'
+
+    def _build_key_tree(self, rhs):
+        items = Gtk.Expander()
+        for x in rhs:
+            if not type(rhs)==type({}):
+                print rhs
+            else:
+                print rhs
+    #
+    def btnMenu_clicked(self, button):
+        dir_tree = self.pypas.pass_array()
+        for x in dir_tree:
+            tmp = self._build_key_tree(x)
+            self.listbox.pack_start(tmp)
+
+    #Show the Window
+    def show(self):
+        self.awindow.show_all()
+
+    #Constructor
+    def __init__(self):
+        #Create PyPass object
+        self.pypas = PyPass()
+
+        #Building UI
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file("passui.glade")
+        self.builder.connect_signals(self)
+
+        self.awindow = self.builder.get_object("applicationwindow1")
+        self.awindow.set_default_size (600, 350);
+        self.awindow.set_position(Gtk.WindowPosition.CENTER)
+        self.awindow.connect("destroy", Gtk.main_quit)
+
+        #Grids
+        self.gridData = self.builder.get_object("gridData")
+
+        #Boxes
+        self.listbox = self.builder.get_object("boxlist")
+
+        #BUTTONS
+        self.btnShowPassword = self.builder.get_object("btnShowPassword")
+        self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
+        self.btnNew= self.builder.get_object("btnNew")
+        self.btnUpdate = self.builder.get_object("btnUpdate")
+        self.btnDelete = self.builder.get_object("btnDelete")
+        self.btnMene = self.builder.get_object("btnMene")
+
+        #Text Buffers
+        self.txtPassword = self.builder.get_object("buffertxtPassword")
+		
+		#Tree View
+		self.store = Gtk.TreeStore(gobject.TYPE_STRING, bool)
+
+	def createTree(self, pass_tree, loc):
+        
+        for i in range(len(pass_tree)):
+            piter = self.store.append(None, [pass_tree[i][0], False])
+            j = 1
+            while j < len(pass_tree[i]):
+                self.store.append(piter, pass_tree[i][j])
+                j += 1
+        view = Gtk.TreeView()
+        view.set_model(self.store)
+        # the cellrenderer for the first column - text
+        renderer_books = Gtk.CellRendererText()
+        # the first column is created
+        column_books = Gtk.TreeViewColumn("Books", renderer_books, text=0)
+        # and it is appended to the treeview
+        view.append_column(column_books)
+        # the cellrenderer for the second column - boolean rendered as a toggle
+        renderer_in_out = Gtk.CellRendererToggle()
+        # the second column is created
+        column_in_out = Gtk.TreeViewColumn("Out?", renderer_in_out, active=1)
+        # and it is appended to the treeview
+        view.append_column(column_in_out)
+        # connect the cellrenderertoggle with a callback function
+        renderer_in_out.connect("toggled", self.on_toggled)
+        # add the treeview to the window
+        self.gridData.add(view)
+
+
+
+
+
+		
