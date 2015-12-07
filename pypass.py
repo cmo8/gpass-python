@@ -14,7 +14,12 @@ class PyPass:
         return out
 
     def insert(self, account, password):
-        print "pass insert ", account, " -p ", password
+        cmd = "pass insert -e " + account
+        #print cmd
+        parsed_cmd = shlex.split([cmd, password])
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        out, err = proc.communicate()
+        return out
 
     def generate(self, account):
         print "pass generate ", account
