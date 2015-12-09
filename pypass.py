@@ -1,10 +1,11 @@
 import os
 import shlex
 from subprocess import Popen, PIPE
-#import gnupg
+import gnupg
+from gpgkey import GPGkey
 
 class PyPass:
-
+    #TODO: rewrite to use gnupg lib
     def account(self, account):
         cmd = "pass " + account
         #print cmd
@@ -13,19 +14,23 @@ class PyPass:
         out, err = proc.communicate()
         return out
 
+    #TODO: rewrite to use gnupg lib
     def insert(self, account, password):
         cmd = "pass insert -e " + account
         #print cmd
-        parsed_cmd = shlex.split([cmd, password])
+        parsed_cmd = shlex.split([cmd, password, password])
         proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = proc.communicate()
         return out
 
+    #TODO: rewrite to use gnupg lib
     def generate(self, account):
         print "pass generate ", account
 
+    #TODO: rewrite to use gnupg lib
     def update(self, account, password='', metadata=None):
         print "pass update ", account
+
 
     def delete(self, account):
         print "pass delete ", account
@@ -53,9 +58,14 @@ class PyPass:
         dirarray = self.build_dir(self.location + path)
         return dirarray
 
-    def __init__(self, location=""):
-        if location == "":
-            self.location = os.environ['HOME'] + '/.password-store'
-        else:
-            self.location = location
+    def __init__(self, gpg_location = "", pass_location = ""):
+        gpg_home = os.environ['HOME'] + '/.gnupg'
+        self.location = os.environ['HOME'] + '/.password-store'
+        if gpg_location != "":
+            gpg_home = gpg_location
+        self.gpg = GPGkey(gpg_home)
+        print public_keys
+        if pass_location != "":
+            self.location = pass_location
+
         #print 'HOME: ' + self.location

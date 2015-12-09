@@ -6,7 +6,7 @@ class PassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        createMsg = CreateMsgUI(self)
+        createMsg = CreateMsgUI(self.passDepth, self.pypas)
         createMsg.show()
         print 'btnNew_clicked'
 

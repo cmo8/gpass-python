@@ -5,29 +5,35 @@ class CreateMsgUI:
 
     #New Button Click Handler
     def btnSave_clicked(self, button):
-        if txtAccount.get_text() == "":
+        if self.txtAccount.get_text() == "":
             print "Error No Account information"
-        elif txtPassword.get_text() == "":
+        elif self.txtPassword.get_text() == "":
             print "Error No Password Entered"
-        elif txtConfirm.get_text() == "":
+        elif self.txtConfirm.get_text() == "":
             print "Error No Confirmation Password"
-        elif txtPassword.get_text() == txtConfirm.get_text()
-            self.pypas.insert(txtAccount.get_text(), txtPassword.get_text())
+        elif self.txtPassword.get_text() == self.txtConfirm.get_text():
+            path = "/".join(self.passDepth)
+            if len(self.passDepth) > 0:
+                path += "/"
+            path += self.txtAccount.get_text()
+            self.pypas.insert(path, self.txtPassword.get_text())
             print "Save Account"
-        else
+        else:
             print "Error Passwords do not match"
 
     #Show And Hide Password Button Click Handler
     def btnCancel_clicked(self, button):
         print 'btnCancel_clicked'
+        self.awindow.destroy()
 
     #Show the Window
     def show(self):
         self.awindow.show_all()
 
     #Constructor
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, passDepth, pypas):
+        self.passDepth = passDepth
+        self.pypas = pypas
         #Building UI
         self.builder = Gtk.Builder()
         self.builder.add_from_file("createMsg.glade")
