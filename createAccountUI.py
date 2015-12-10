@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 from pypass import PyPass
 
-class CreateMsgUI:
+class CreateAccountUI:
 
     #New Button Click Handler
     def btnSave_clicked(self, button):

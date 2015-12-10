@@ -1,13 +1,13 @@
 from gi.repository import Gtk
 from pypass import PyPass
-from createMsg import CreateMsgUI
+from createAccountUI import CreateAccountUI
 
-class PassUI:
+class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        createMsg = CreateMsgUI(self.passDepth, self.pypas)
-        createMsg.show()
+        createAccountUI = CreateAccountUI(self.passDepth, self.pypas)
+        createAccountUI.show()
         print 'btnNew_clicked'
 
     #Show And Hide Password Button Click Handler
