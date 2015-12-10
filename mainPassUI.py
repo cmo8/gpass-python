@@ -106,12 +106,12 @@ class MainPassUI:
         #Boxes
         self.listbox = self.builder.get_object("boxlist")
         #BUTTONS
-        self.btnShowPassword = self.builder.get_object("btnShowPassword")
-        self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
-        self.btnNew = self.builder.get_object("btnNew")
-        self.btnUpdate = self.builder.get_object("btnUpdate")
-        self.btnDelete = self.builder.get_object("btnDelete")
-        self.btnMene = self.builder.get_object("btnMene")
+        #self.btnShowPassword = self.builder.get_object("btnShowPassword")
+        #self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
+        #self.btnNew = self.builder.get_object("btnNew")
+        #self.btnUpdate = self.builder.get_object("btnUpdate")
+        #self.btnDelete = self.builder.get_object("btnDelete")
+        #self.btnMene = self.builder.get_object("btnMene")
         #Text Buffers
         self.txtPassword = self.builder.get_object("buffertxtPassword")
         self.txtFile = self.builder.get_object("buffertxtFile")

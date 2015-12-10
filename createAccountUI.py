@@ -42,8 +42,8 @@ class CreateAccountUI:
         self.awindow = self.builder.get_object("msgCreate")
         self.awindow.set_position(Gtk.WindowPosition.CENTER)
         #BUTTONS
-        self.btnCancel = self.builder.get_object("btnCancel")
-        self.btnSave = self.builder.get_object("btnSave")
+        #self.btnCancel = self.builder.get_object("btnCancel")
+        #self.btnSave = self.builder.get_object("btnSave")
         #Text Buffers
         self.txtAccount = self.builder.get_object("bufferAccount")
         self.txtPassword = self.builder.get_object("bufferPassword")
