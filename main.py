@@ -4,10 +4,12 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from gpassconfig import GPassConfig
 from mainPassUI import MainPassUI
 
 def main():
-    win = MainPassUI()
+    passConfig = GPassConfig()
+    win = MainPassUI(passConfig)
     win.show()
     Gtk.main()
 

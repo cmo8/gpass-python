@@ -36,7 +36,6 @@ class GPGkey:
         with open(filepath_out, 'w') as f:
             f.write(str(encrypt_str))
 
-
     def decrypt_from_file(self, filepath_in, filepath_out=None):
         with open(filepath_in, 'rb') as f:
             plain_str = self.decrypt(f.read())

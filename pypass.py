@@ -6,14 +6,13 @@ from gpgkey import GPGkey
 class PyPass:
     #returns an unecrypted string of the selected file
     def account(self, account):
-        out = self.gpg.decrypt_from_file(self.location + '/' + account + '.gpg')
+        out = self.gpg.decrypt_from_file(self.gpass_config.password_store + '/' + account + '.gpg')
         return str(out)
 
-    #TODO: rewrite to use gnupg lib
+    #Inserts a GPG encrypted file into the password store
     def insert(self, account, message):
-        out = self.gpg.encrypt_to_file(message, self.location + '/' + account + '.gpg')
-        print out
-        #return out
+        print "Entering Insert"
+        out = self.gpg.encrypt_to_file(message, self.gpass_config.password_store + '/' + account + '.gpg')
 
     #TODO: rewrite to use gnupg lib
     def generate(self, account):
@@ -50,18 +49,10 @@ class PyPass:
         if len(p) > 0:
             path = "/"
         path += p
-        dirarray = self.build_dir(self.location + path)
+        dirarray = self.build_dir(self.gpass_config.password_store + path)
         return dirarray
 
-    def __init__(self, gpg_location = "", pass_location = ""):
-        self.gpgbinary = '/usr/bin/gpg2'
-        self.gpgkey_id = 'cmo.uwp.2010@gmail.com'
-        self.gpg_home = os.environ['HOME'] + '/.gnupg'
-        self.location = os.environ['HOME'] + '/.password-store'
-        if gpg_location != "":
-            self.gpg_home = gpg_location
-        self.gpg = GPGkey(self.gpgbinary, self.gpg_home, self.gpgkey_id)
-        if pass_location != "":
-            self.location = pass_location
-
-        #print 'HOME: ' + self.location
+    def __init__(self, config):
+        self.gpass_config = config
+        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
+        
