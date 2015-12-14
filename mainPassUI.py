@@ -1,14 +1,16 @@
 from gi.repository import Gtk, Gdk
 from pypass import PyPass
 from createAccountUI import CreateAccountUI
+from popcreateaccount import popCreateAccount
 from popdelete import PopDelete
 
 class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        createAccountUI = CreateAccountUI(self, self.passDepth, self.pypas)
-        createAccountUI.show()
+        popcreateaccount = popCreateAccount(self, self.passDepth, self.pypas)
+        popcreateaccount.show()
+        popcreateaccount.destroy()
         print 'btnNew_clicked'
 
     #Copy the Password to the Clipboard Button Click Handler
