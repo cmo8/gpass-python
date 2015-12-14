@@ -1,7 +1,6 @@
 from gi.repository import Gtk
 from pypass import PyPass
 
-
 class PopDelete:
     #Button Yes click event
     def on_delete_yes_button_toggled(self, button, name):
