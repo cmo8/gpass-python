@@ -8,7 +8,7 @@ class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        popcreateaccount = popCreateAccount(self, self.passDepth, self.pypas)
+        popcreateaccount = popCreateAccount(self.btnNew, self.passDepth, self.pypas)
         popcreateaccount.show()
         popcreateaccount.destroy()
         print 'btnNew_clicked'
@@ -170,7 +170,7 @@ class MainPassUI:
         self.checkShow = self.builder.get_object("checkShow")
         #self.btnShowPassword = self.builder.get_object("btnShowPassword")
         #self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
-        #self.btnNew = self.builder.get_object("btnNew")
+        self.btnNew = self.builder.get_object("btnNew")
         #self.btnUpdate = self.builder.get_object("btnUpdate")
         self.btnDelete = self.builder.get_object("btnDelete")
         self.popDelete = PopDelete(self.btnDelete, self.pypas)
