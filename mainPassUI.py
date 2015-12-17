@@ -8,9 +8,8 @@ class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        popcreateaccount = popCreateAccount(self.btnNew, self.passDepth, self.pypas)
+        popcreateaccount = popCreateAccount(self, self.btnNew, self.passDepth, self.pypas)
         popcreateaccount.show()
-        popcreateaccount.destroy()
         print 'btnNew_clicked'
 
     #Copy the Password to the Clipboard Button Click Handler

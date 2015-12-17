@@ -50,9 +50,11 @@ class popCreateAccount:
     #Show the Menu
     def show(self):
         self.popCreate.show_all()
+        self.txtAccountBox.grab_focus()
 
     #Constructor
-    def __init__(self, btn, passDepth, pypas):
+    def __init__(self,parent, btn, passDepth, pypas):
+        self.parent = parent
         self.pypas = pypas
         self.passDepth = passDepth
         self.btn = btn
@@ -62,6 +64,11 @@ class popCreateAccount:
         self.builder = Gtk.Builder()
         self.builder.add_from_file("popcreateaccount.glade")
         self.builder.connect_signals(self)
+        #BUTTONS
+        self.btnCancel = self.builder.get_object("btnCancel")
+        self.btnSave = self.builder.get_object("btnSave")
+        self.btnGenerate = self.builder.get_object("btnGeneratePassword")
+        self.checkShow = self.builder.get_object("checkShow")
         #Text Buffers
         self.txtAccount = self.builder.get_object("bufferAccount")
         self.txtPassword = self.builder.get_object("bufferPassword")
@@ -71,4 +78,13 @@ class popCreateAccount:
         self.txtConfirmBox = self.builder.get_object("txtConfirm")
         #Application Window
         hbox = self.builder.get_object("msgCreate")
+        tab_list = [self.txtAccountBox,
+                    self.txtPasswordBox,
+                    self.txtConfirmBox,
+                    self.btnSave,
+                    self.btnGenerate,
+                    self.checkShow,
+                    self.btnCancel]
+        #self.popDelete.set_focus_chain()
+        hbox.set_focus_chain(tab_list)
         self.popCreate.add(hbox)
