@@ -2,17 +2,17 @@ import os
 import shlex
 from subprocess import Popen, PIPE
 from gpgkey import GPGkey
-
 class PyPass:
+
     #returns an unecrypted string of the selected file
     def account(self, account):
-        out = self.gpg.decrypt_from_file(self.gpass_config.password_store + '/' + account + '.gpg')
+        out = self.gpg.decrypt_from_file(self.gpass_config.password_store + '/' + account)
         return str(out)
 
     #Inserts a GPG encrypted file into the password store
     def insert(self, account, message):
         print "Entering Insert"
-        out = self.gpg.encrypt_to_file(message, self.gpass_config.password_store + '/' + account + '.gpg')
+        out = self.gpg.encrypt_to_file(message, self.gpass_config.password_store + '/' + account)
 
     #TODO: rewrite to use gnupg lib
     def generate(self, account):
@@ -21,7 +21,6 @@ class PyPass:
     #TODO: rewrite to use gnupg lib
     def update(self, account, password='', metadata=None):
         print "pass update ", account
-
 
     def delete(self, account):
         print "pass delete ", account
@@ -55,4 +54,3 @@ class PyPass:
     def __init__(self, config):
         self.gpass_config = config
         self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
-        

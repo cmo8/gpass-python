@@ -17,11 +17,10 @@ class popCreateAccount:
         elif self.txtConfirm.get_text() == "":
             print "Error No Confirmation Password"
         elif self.txtPassword.get_text() == self.txtConfirm.get_text():
-            path = "/".join(self.passDepth)
-            if len(self.passDepth) > 0:
-                path += "/"
-            path += self.txtAccount.get_text()
-            self.pypas.insert(path, self.txtPassword.get_text())
+            if len(self.path) > 0:
+                self.path += "/"
+            self.path += self.txtAccount.get_text() + '.gpg'
+            self.pypas.insert(self.path, self.txtPassword.get_text() + '\n')
             print "Save Account"
             self.parent.repack_buttons()
             self.popCreate.hide()
@@ -53,10 +52,10 @@ class popCreateAccount:
         self.txtAccountBox.grab_focus()
 
     #Constructor
-    def __init__(self,parent, btn, passDepth, pypas):
+    def __init__(self, parent, btn, path, pypas):
         self.parent = parent
         self.pypas = pypas
-        self.passDepth = passDepth
+        self.path = path
         self.btn = btn
         #Creating a popover
         self.popCreate = Gtk.Popover.new(self.btn)

@@ -3,14 +3,31 @@ from pypass import PyPass
 from createAccountUI import CreateAccountUI
 from popcreateaccount import popCreateAccount
 from popdelete import PopDelete
+from popadditem import PopAddItem
 
 class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
-        popcreateaccount = popCreateAccount(self, self.btnNew, self.passDepth, self.pypas)
+        self.clear_account_info()
+        popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path(), self.pypas)
         popcreateaccount.show()
         print 'btnNew_clicked'
+
+    #Add Item Button Click Handler
+    def btnAddItem_clicked(self, button):
+        start = self.txtFile.get_start_iter()
+        end = self.txtFile.get_end_iter()
+        popadditem = PopAddItem(self, self.btnAddItem, self.pypas, self.txtFile.get_text(start, end, True))
+        popadditem.show()
+        print "btnAddItem_clicked"
+
+    #Saves the new key to the GPG file
+    def updateAccount(self, key, value):
+        data = self.txtFile.set_get()
+        data += key + ": " + value + "\n"
+        self.pypas.insert(data, )
+
 
     #Copy the Password to the Clipboard Button Click Handler
     def btnCopyToClipboard_clicked(self, button):
@@ -19,9 +36,8 @@ class MainPassUI:
 
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
-        #Add Delete Popover
-        self.popDelete =  PopDelete(self.btnDelete, self.pypas)
-        self.popDelete.show()
+        popDelete =  PopDelete(self.btnDelete, self.pypas)
+        popDelete.show()
         print 'btnDelete_clicked'
 
     #Update Button Click Handler
@@ -31,12 +47,13 @@ class MainPassUI:
     #Button Handler for a PGP password file
     def btnPGP_clicked(self, button):
         self.clear_account_info()
-        act = self.get_pass_path()
-        if len(act) > 0:
-            act += "/"
-        act += button.get_label()
+        self.openAccount = button.get_label()
+        self.displayAccount(self.get_pass_path())
+
+    #displays the selected account
+    def displayAccount(self, accountToDisplay):
         #Get GPG file content
-        account_info = self.pypas.account(act)
+        account_info = self.pypas.account(accountToDisplay)
         #display contents in text editor
         self.txtFile.set_text(str(account_info))
         #Split the lines appert
@@ -44,7 +61,6 @@ class MainPassUI:
         #place password in text box
         self.txtPassword.set_text(account_lines[0], len(account_lines[0]))
         account_lines.remove(account_lines[0])
-        left = 0
         top = 1
         for line in account_lines:
             #Split the line into key => value
@@ -58,10 +74,29 @@ class MainPassUI:
                 txt.set_text(row[1])
                 #Add Label and Textbox to the array
                 self.accountElements[row[1]] = txt
-                self.gridData.attach(lbl, left, top, 1, 1)
+                self.gridData.attach(lbl, 0, top, 1, 1)
                 self.gridData.attach_next_to(txt, lbl, Gtk.PositionType.RIGHT, 1, 1)
                 top += 1
             self.gridData.show_all()
+        self.btnDelete.set_sensitive(True)
+        self.btnUpdate.set_sensitive(True)
+        self.btnAddItem.set_sensitive(True)
+
+    #Clear the data from the grid view, txtPassword, and the txtFile
+    def clear_account_info(self, clearOpenAccount = True):
+        if self.openAccount != None and clearOpenAccount:
+            self.openAccount = None
+        position = 1
+        for element in self.accountElements:
+            self.gridData.remove_row(position)
+        self.accountElements = {}
+        self.txtFile.set_text("", 0)
+        self.txtPassword.set_text("", 0)
+        self.checkShow.set_active(False)
+        self.clipboard.clear()
+        self.btnDelete.set_sensitive(False)
+        self.btnUpdate.set_sensitive(False)
+        self.btnAddItem.set_sensitive(False)
 
     #Move into a selected folder
     def btnFolder_clicked(self, button):
@@ -76,14 +111,12 @@ class MainPassUI:
     #
     def btnMenu_clicked(self, button):
         print "btnMenu_clicked"
-    #
-    def btnAddItem_clicked(self, button):
-        print "btnAddItem_clicked"
 
     #Show and hide password
     def checkShow_toggled(self, check):
         active = self.checkShow.get_active()
         self.txtPasswordBox.set_visibility(active)
+
     #Show the Window
     def show(self):
         self.awindow.show_all()
@@ -129,19 +162,14 @@ class MainPassUI:
 
     #get the current path
     def get_pass_path(self):
-        return "".join(self.passDepth)
+        path = "".join(self.passDepth)
+        if self.openAccount != None:
+            path += self.openAccount
+            path += ".gpg"
+        print path
+        return path
 
-    #Clear the data from the grid view, txtPassword, and the txtFile
-    def clear_account_info(self):
-        if len(self.accountElements) > 0:
-            position = 1
-            for element in self.accountElements:
-                self.gridData.remove_row(position)
-            self.accountElements = {}
-            self.txtFile.set_text("", 0)
-            self.txtPassword.set_text("", 0)
-            self.checkShow.set_active(False)
-            self.clipboard.clear()
+
 
     #Constructor
     def __init__(self, config):
@@ -149,6 +177,7 @@ class MainPassUI:
         self.gpass_config = config
         self.pypas = PyPass(self.gpass_config)
         self.passDepth = []
+        self.openAccount = None
         self.passBtnArray = {}
         self.accountElements = {}
         #Building UI
@@ -170,9 +199,13 @@ class MainPassUI:
         #self.btnShowPassword = self.builder.get_object("btnShowPassword")
         #self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
         self.btnNew = self.builder.get_object("btnNew")
-        #self.btnUpdate = self.builder.get_object("btnUpdate")
+        self.btnUpdate = self.builder.get_object("btnUpdate")
+        self.btnAddItem = self.builder.get_object("btnAddItem")
         self.btnDelete = self.builder.get_object("btnDelete")
-        self.popDelete = PopDelete(self.btnDelete, self.pypas)
+        #self.popDelete = PopDelete(self.btnDelete, self.pypas)
+        self.btnDelete.set_sensitive(False)
+        self.btnUpdate.set_sensitive(False)
+        self.btnAddItem.set_sensitive(False)
         #self.btnMene = self.builder.get_object("btnMene")
         #Text Buffers
         self.txtPassword = self.builder.get_object("buffertxtPassword")

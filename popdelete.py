@@ -17,7 +17,7 @@ class PopDelete:
         #Creating a popover
         popover = Gtk.Popover.new(self.btn)
 
-        hbox = Gtk.Box(Gtk.Orientation.VERTICAL, 10)
+        hbox = Gtk.VBox(10)
         popover.add(hbox)
 
         label = Gtk.Label("Are you sure?")
