@@ -7,6 +7,50 @@ from popadditem import PopAddItem
 
 class MainPassUI:
 
+    #Constructor
+    def __init__(self, config):
+        #Create PyPass object
+        self.gpass_config = config
+        self.pypas = PyPass(self.gpass_config)
+        self.passDepth = []
+        self.openAccount = None
+        self.passBtnArray = {}
+        self.accountElements = {}
+        #Building UI
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file("mainPassUI.glade")
+        self.builder.connect_signals(self)
+        #Application Window
+        self.awindow = self.builder.get_object("applicationwindow1")
+        self.awindow.set_default_size (700, 350);
+        self.awindow.set_position(Gtk.WindowPosition.CENTER)
+        self.awindow.connect("destroy", Gtk.main_quit)
+        self.awindow.set_title("GPass")
+        #Grids
+        self.gridData = self.builder.get_object("gridData")
+        #Boxes
+        self.listbox = self.builder.get_object("boxlist")
+        #BUTTONS
+        self.checkShow = self.builder.get_object("checkShow")
+        self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
+        self.btnNew = self.builder.get_object("btnNew")
+        self.btnUpdate = self.builder.get_object("btnUpdate")
+        self.btnAddItem = self.builder.get_object("btnAddItem")
+        self.btnDelete = self.builder.get_object("btnDelete")
+        #self.popDelete = PopDelete(self.btnDelete, self.pypas)
+        self.btnDelete.set_sensitive(False)
+        self.btnUpdate.set_sensitive(False)
+        self.btnAddItem.set_sensitive(False)
+        #self.btnMene = self.builder.get_object("btnMene")
+        #Text Buffers
+        self.txtPassword = self.builder.get_object("buffertxtPassword")
+        self.txtPasswordBox = self.builder.get_object("txtPassword")
+        self.txtFile = self.builder.get_object("buffertxtFile")
+        #Clipboard
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        #Add pass database buttons
+        self.pack_buttons(self.pypas.pass_array())
+
     #New Button Click Handler
     def btnNew_clicked(self, button):
         self.clear_account_info()
@@ -22,13 +66,6 @@ class MainPassUI:
         popadditem.show()
         print "btnAddItem_clicked"
 
-    #Saves the new key to the GPG file
-    def updateAccount(self, key, value):
-        data = self.txtFile.set_get()
-        data += key + ": " + value + "\n"
-        self.pypas.insert(data, )
-
-
     #Copy the Password to the Clipboard Button Click Handler
     def btnCopyToClipboard_clicked(self, button):
         self.clipboard.set_text(self.txtPassword.get_text(), -1)
@@ -36,12 +73,17 @@ class MainPassUI:
 
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
-        popDelete =  PopDelete(self.btnDelete, self.pypas)
+        popDelete =  PopDelete(self, self.btnDelete, self.pypas)
         popDelete.show()
         print 'btnDelete_clicked'
 
     #Update Button Click Handler
     def btnUpdate_clicked(self, button):
+        start = self.txtFile.get_start_iter()
+        end = self.txtFile.get_end_iter()
+        self.pypas.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
+        self.clear_account_info(False)
+        self.displayAccount(self.get_pass_path())
         print 'btnUpdate_clicked'
 
     #Button Handler for a PGP password file
@@ -49,6 +91,20 @@ class MainPassUI:
         self.clear_account_info()
         self.openAccount = button.get_label()
         self.displayAccount(self.get_pass_path())
+
+    #Move into a selected folder
+    def btnFolder_clicked(self, button):
+        self.passDepth.append(button.get_label())
+        self.repack_buttons()
+
+    #Update Button Click Handler
+    def btnBack_clicked(self, button):
+        self.passDepth.pop()
+        self.repack_buttons()
+        self.clear_account_info()
+    #
+    def btnMenu_clicked(self, button):
+        print "btnMenu_clicked"
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
@@ -67,7 +123,7 @@ class MainPassUI:
             row = line.split(': ')
             if len(row) == 2:
                 #Create GtkLabel
-                lbl = Gtk.Label(row[0] + ':')
+                lbl = Gtk.Label(row[0].title() + ':')
                 lbl.set_justify(Gtk.Justification.RIGHT)
                 #Create GtkTextbox
                 txt = Gtk.Entry()
@@ -81,6 +137,8 @@ class MainPassUI:
         self.btnDelete.set_sensitive(True)
         self.btnUpdate.set_sensitive(True)
         self.btnAddItem.set_sensitive(True)
+        self.checkShow.set_sensitive(True)
+        self.btnCopyToClipboard.set_sensitive(True)
 
     #Clear the data from the grid view, txtPassword, and the txtFile
     def clear_account_info(self, clearOpenAccount = True):
@@ -97,20 +155,8 @@ class MainPassUI:
         self.btnDelete.set_sensitive(False)
         self.btnUpdate.set_sensitive(False)
         self.btnAddItem.set_sensitive(False)
-
-    #Move into a selected folder
-    def btnFolder_clicked(self, button):
-        self.passDepth.append(button.get_label())
-        self.repack_buttons()
-
-    #Update Button Click Handler
-    def btnBack_clicked(self, button):
-        self.passDepth.pop()
-        self.repack_buttons()
-        self.clear_account_info()
-    #
-    def btnMenu_clicked(self, button):
-        print "btnMenu_clicked"
+        self.checkShow.set_sensitive(False)
+        self.btnCopyToClipboard.set_sensitive(False)
 
     #Show and hide password
     def checkShow_toggled(self, check):
@@ -169,54 +215,3 @@ class MainPassUI:
         print path
         return path
 
-
-
-    #Constructor
-    def __init__(self, config):
-        #Create PyPass object
-        self.gpass_config = config
-        self.pypas = PyPass(self.gpass_config)
-        self.passDepth = []
-        self.openAccount = None
-        self.passBtnArray = {}
-        self.accountElements = {}
-        #Building UI
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file("mainPassUI.glade")
-        self.builder.connect_signals(self)
-        #Application Window
-        self.awindow = self.builder.get_object("applicationwindow1")
-        self.awindow.set_default_size (700, 350);
-        self.awindow.set_position(Gtk.WindowPosition.CENTER)
-        self.awindow.connect("destroy", Gtk.main_quit)
-        self.awindow.set_title("GPass")
-        #Grids
-        self.gridData = self.builder.get_object("gridData")
-        #Boxes
-        self.listbox = self.builder.get_object("boxlist")
-        #BUTTONS
-        self.checkShow = self.builder.get_object("checkShow")
-        #self.btnShowPassword = self.builder.get_object("btnShowPassword")
-        #self.btnCopyToClipboard = self.builder.get_object("btnCopyToClipboard")
-        self.btnNew = self.builder.get_object("btnNew")
-        self.btnUpdate = self.builder.get_object("btnUpdate")
-        self.btnAddItem = self.builder.get_object("btnAddItem")
-        self.btnDelete = self.builder.get_object("btnDelete")
-        #self.popDelete = PopDelete(self.btnDelete, self.pypas)
-        self.btnDelete.set_sensitive(False)
-        self.btnUpdate.set_sensitive(False)
-        self.btnAddItem.set_sensitive(False)
-        #self.btnMene = self.builder.get_object("btnMene")
-        #Text Buffers
-        self.txtPassword = self.builder.get_object("buffertxtPassword")
-        self.txtPasswordBox = self.builder.get_object("txtPassword")
-        self.txtFile = self.builder.get_object("buffertxtFile")
-        #Clipboard
-        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        #Add pass database buttons
-        self.pack_buttons(self.pypas.pass_array())
-
-
-
-
-		

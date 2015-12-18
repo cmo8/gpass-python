@@ -102,81 +102,94 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <child>
-                      <object class="GtkGrid" id="gridData">
+                      <object class="GtkScrolledWindow" id="scrolledwindow2">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_left">10</property>
-                        <property name="margin_right">10</property>
-                        <property name="margin_top">10</property>
-                        <property name="margin_bottom">10</property>
-                        <property name="row_spacing">10</property>
-                        <property name="column_spacing">10</property>
+                        <property name="can_focus">True</property>
+                        <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkEntry" id="txtPassword">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="margin_left">1</property>
-                            <property name="buffer">buffertxtPassword</property>
-                            <property name="visibility">False</property>
-                            <property name="invisible_char">*</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lblPassword">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_left">10</property>
-                            <property name="label" translatable="yes">Password:</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="box4">
+                          <object class="GtkViewport" id="viewport2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkCheckButton" id="checkShow">
-                                <property name="label" translatable="yes">Show</property>
+                              <object class="GtkGrid" id="gridData">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="checkShow_toggled" swapped="no"/>
+                                <property name="can_focus">False</property>
+                                <property name="margin_left">10</property>
+                                <property name="margin_right">10</property>
+                                <property name="margin_top">10</property>
+                                <property name="margin_bottom">10</property>
+                                <property name="row_spacing">10</property>
+                                <property name="column_spacing">10</property>
+                                <child>
+                                  <object class="GtkEntry" id="txtPassword">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="margin_left">1</property>
+                                    <property name="buffer">buffertxtPassword</property>
+                                    <property name="visibility">False</property>
+                                    <property name="invisible_char">*</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="lblPassword">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_left">10</property>
+                                    <property name="label" translatable="yes">Password:</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="box4">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkCheckButton" id="checkShow">
+                                        <property name="label" translatable="yes">Show</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="xalign">0</property>
+                                        <property name="draw_indicator">True</property>
+                                        <signal name="toggled" handler="checkShow_toggled" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btnCopyToClipboard">
+                                        <property name="label" translatable="yes">Copy</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <signal name="clicked" handler="btnCopyToClipboard_clicked" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="padding">10</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="top_attach">0</property>
+                                  </packing>
+                                </child>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btnCopyToClipboard">
-                                <property name="label" translatable="yes">Copy</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="btnCopyToClipboard_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="padding">10</property>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="left_attach">2</property>
-                            <property name="top_attach">0</property>
-                          </packing>
                         </child>
                       </object>
                     </child>

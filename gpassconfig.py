@@ -1,6 +1,8 @@
 import  os
 
 class GPassConfig:
+
+    #Constructor
     def __init__(self):
         self.password_len = 0
         self.char_set = {}
@@ -15,6 +17,7 @@ class GPassConfig:
         else:
             print 'ERROR: No Config file found'
 
+    #Reads in the config file and stores the variables.
     def get_config(self):
         with open('gpass.config', 'r') as f:
             for line in f:
@@ -42,6 +45,7 @@ class GPassConfig:
                     elif conf[0] == 'gpgkey':
                         self.gpgkey = conf[1][:-1]
 
+    #Test Function to display the current config
     def config_test(self):
         print "Password Length          : ", self.password_len
         print "Character Sets           : ", self.char_set

@@ -1,30 +1,31 @@
 import os
-import shlex
-from subprocess import Popen, PIPE
 from gpgkey import GPGkey
+
 class PyPass:
 
-    #returns an unecrypted string of the selected file
+    #Creates a PyPass object
+    def __init__(self, config):
+        self.gpass_config = config
+        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
+
+    #Returns an unecrypted string of the selected file
     def account(self, account):
-        out = self.gpg.decrypt_from_file(self.gpass_config.password_store + '/' + account)
+        out = self.gpg.decrypt_from_file(self.build_path(account))
         return str(out)
 
     #Inserts a GPG encrypted file into the password store
     def insert(self, account, message):
+        if not str1.endswith('\n'):
+            message += '\n'
         print "Entering Insert"
-        out = self.gpg.encrypt_to_file(message, self.gpass_config.password_store + '/' + account)
+        out = self.gpg.encrypt_to_file(message, self.build_path(account))
 
-    #TODO: rewrite to use gnupg lib
-    def generate(self, account):
-        print "pass generate ", account
-
-    #TODO: rewrite to use gnupg lib
-    def update(self, account, password='', metadata=None):
-        print "pass update ", account
-
+    #Deletes the selected account
     def delete(self, account):
-        print "pass delete ", account
+        os.remove(self.build_path(account))
+        print "pass delete ", self.build_path(account)
 
+    #Displays the folders and accounts in the selected folder
     def build_dir(self, path):
         rtn = []
         #pulls the current
@@ -43,14 +44,12 @@ class PyPass:
         rtn.sort()
         return rtn
 
-    def pass_array(self, p = ""):
-        path = ""
-        if len(p) > 0:
-            path = "/"
-        path += p
-        dirarray = self.build_dir(self.gpass_config.password_store + path)
-        return dirarray
+    #Returns an array of the items in the directory location
+    def pass_array(self, child_path = ""):
+        dir_items = self.build_dir(self.build_path(child_path))
+        return dir_items
 
-    def __init__(self, config):
-        self.gpass_config = config
-        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
+    #Concatinates the root password store path with the child path
+    def build_path(self, child_path):
+        return self.gpass_config.password_store + '/' + child_path
+    

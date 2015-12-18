@@ -4,6 +4,30 @@ from pypass import PyPass
 
 class CreateAccountUI:
 
+    #Constructor
+    def __init__(self, parent, passDepth, pypas):
+        self.parent = parent
+        self.passDepth = passDepth
+        self.pypas = pypas
+        #Building UI
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file("createAccountUI.glade")
+        self.builder.connect_signals(self)
+        #Application Window
+        self.awindow = self.builder.get_object("msgCreate")
+        self.awindow.set_transient_for(parent.get_window())
+        self.awindow.set_position(Gtk.WindowPosition.CENTER)
+        #BUTTONS
+        self.btnCancel = self.builder.get_object("btnCancel")
+        self.btnSave = self.builder.get_object("btnSave")
+        self.checkShow = self.builder.get_object("checkShow")
+        #Text Buffers
+        self.txtAccount = self.builder.get_object("bufferAccount")
+        self.txtPassword = self.builder.get_object("bufferPassword")
+        self.txtConfirm = self.builder.get_object("bufferConfirm")
+        self.txtPasswordBox = self.builder.get_object("txtPassword")
+        self.txtConfirmBox = self.builder.get_object("txtConfirm")
+
     #New Button Click Handler
     def btnSave_clicked(self, button):
         if self.txtAccount.get_text() == "":
@@ -47,26 +71,3 @@ class CreateAccountUI:
     def show(self):
         self.awindow.show_all()
 
-    #Constructor
-    def __init__(self, parent, passDepth, pypas):
-        self.parent = parent
-        self.passDepth = passDepth
-        self.pypas = pypas
-        #Building UI
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file("createAccountUI.glade")
-        self.builder.connect_signals(self)
-        #Application Window
-        self.awindow = self.builder.get_object("msgCreate")
-        self.awindow.set_transient_for(parent.get_window())
-        self.awindow.set_position(Gtk.WindowPosition.CENTER)
-        #BUTTONS
-        self.btnCancel = self.builder.get_object("btnCancel")
-        self.btnSave = self.builder.get_object("btnSave")
-        self.checkShow = self.builder.get_object("checkShow")
-        #Text Buffers
-        self.txtAccount = self.builder.get_object("bufferAccount")
-        self.txtPassword = self.builder.get_object("bufferPassword")
-        self.txtConfirm = self.builder.get_object("bufferConfirm")
-        self.txtPasswordBox = self.builder.get_object("txtPassword")
-        self.txtConfirmBox = self.builder.get_object("txtConfirm")

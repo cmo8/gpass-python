@@ -2,12 +2,22 @@ from gi.repository import Gtk
 from pypass import PyPass
 
 class PopAddItem:
+
+    #ConstructorPopAddItem
+    def __init__(self, parent, btn, pypas, data):
+        self.parent = parent
+        self.btn = btn
+        self.pypas = pypas
+        self.data = data
+        self.txtKey = Gtk.Entry()
+        self.txtValue = Gtk.Entry()
+        self.popAddItem = self.create_additem_popover_menu()
+
     #Button Yes click event
     def on_add_item_button_click(self, button):
         key = self.txtKey.get_text()
         value = self.txtValue.get_text()
-        self.data += key + ': ' + value + '\n'
-        print self.data
+        self.data += key.lower() + ': ' + value + '\n'
         self.pypas.insert(self.parent.get_pass_path(), self.data)
         print "Add Item"
         self.parent.clear_account_info(False)
@@ -47,13 +57,3 @@ class PopAddItem:
     def show(self):
         self.popAddItem.show_all()
 
-    #ConstructorPopAddItem
-    def __init__(self, parent, btn, pypas, data):
-        self.parent = parent
-        self.btn = btn
-        self.pypas = pypas
-        self.data = data
-        self.txtKey = Gtk.Entry()
-        self.txtValue = Gtk.Entry()
-
-        self.popAddItem = self.create_additem_popover_menu()

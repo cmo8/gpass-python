@@ -2,8 +2,17 @@ from gi.repository import Gtk
 from pypass import PyPass
 
 class PopDelete:
+    #Constructor
+    def __init__(self, parent, btn, pypas):
+        self.parent = parent
+        self.pypas = pypas
+        self.btn = btn
+        self.popDelete = self.create_delete_popover_menu()
+
     #Button Yes click event
     def on_delete_yes_button_toggled(self, button, name):
+        self.pypas.delete(self.parent.get_pass_path())
+        self.parent.repack_buttons()
         print "Yes Delete"
         self.popDelete.hide()
 
@@ -38,8 +47,3 @@ class PopDelete:
     #Show the menu
     def show(self):
         self.popDelete.show_all()
-    #Constructor
-    def __init__(self, btn, pypas):
-        self.pypas = pypas
-        self.btn = btn
-        self.popDelete = self.create_delete_popover_menu()
