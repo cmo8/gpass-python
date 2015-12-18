@@ -26,13 +26,14 @@
                 <property name="margin_right">5</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkSearchEntry" id="searchentry1">
+                  <object class="GtkSearchEntry" id="txtSearch">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="margin_bottom">4</property>
                     <property name="primary_icon_name">edit-find-symbolic</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">False</property>
+                    <signal name="search-changed" handler="txtSearch_search_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

@@ -4,7 +4,15 @@ from createAccountUI import CreateAccountUI
 from popcreateaccount import popCreateAccount
 from popdelete import PopDelete
 from popadditem import PopAddItem
-
+#TODO: Change the account button method to Gkt.Expander
+#TODO: Add a config Screen
+#TODO: Add a Remove selected items
+#TODO: Show what account is selected
+#TODO: Add Create Folder functionality
+#TODO: Add Headerbar
+#TODO: Add Git suport
+#TODO: Add Create password store
+#TODO: Add multiple GPG key suport
 class MainPassUI:
 
     #Constructor
@@ -43,6 +51,7 @@ class MainPassUI:
         self.btnAddItem.set_sensitive(False)
         #self.btnMene = self.builder.get_object("btnMene")
         #Text Buffers
+        self.txtSearch = self.builder.get_object("txtSearch")
         self.txtPassword = self.builder.get_object("buffertxtPassword")
         self.txtPasswordBox = self.builder.get_object("txtPassword")
         self.txtFile = self.builder.get_object("buffertxtFile")
@@ -105,6 +114,12 @@ class MainPassUI:
     #
     def btnMenu_clicked(self, button):
         print "btnMenu_clicked"
+
+    #Handler for the search entity
+    def txtSearch_search_changed(self, txt):
+        print "Search: ", self.txtSearch.get_text()
+        tmp = self.pypas.find(self.txtSearch.get_text())
+        print tmp
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):

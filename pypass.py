@@ -15,15 +15,55 @@ class PyPass:
 
     #Inserts a GPG encrypted file into the password store
     def insert(self, account, message):
-        if not str1.endswith('\n'):
+        if not message.endswith('\n'):
             message += '\n'
         print "Entering Insert"
         out = self.gpg.encrypt_to_file(message, self.build_path(account))
 
     #Deletes the selected account
     def delete(self, account):
-        os.remove(self.build_path(account))
-        print "pass delete ", self.build_path(account)
+        if not os.path.isdir(self.build_path(account)):
+            os.remove(self.build_path(account))
+            print "Deleted: ", self.build_path(account)
+        else:
+            print "Failed Delete: Not a File - ", self.build_path(account)
+
+    #Search the password database for matches
+    def find(self, search):
+        search_tokens = search.split()
+        #print "Tokens: ", search_tokens
+        resuts = self.build_gpg_list(self.build_path(''), search_tokens)
+        print resuts
+        return resuts
+
+    #Searches the file for the given search tokens
+    def search_file(self, file_name, search_tokens):
+        for token in search_tokens:
+            #print file_name, " => ", file_name.count(token)
+            if file_name.count(token) > 0:
+                return True
+        return False
+
+    #Builds a dictionary of the files that contain the search_tokens
+    def build_gpg_list(self, path, search_tokens):
+        rtn = {}
+        #pulls the current
+        stream = os.listdir(path)
+        stream.sort()
+        for x in stream:
+            #Skip hiden files
+            if not x.startswith("."):
+                #checks if x is a file
+                if not os.path.isdir(path + "/" + x):
+                    if self.search_file(x, search_tokens):
+                        file_name = x[:-4]
+                        rtn[file_name] = path + '/' + x
+                else:
+                    #print "else -> " + path + "/" + x
+                    tmp = self.build_gpg_list(path + "/" + x, search_tokens)
+                    if tmp != {}:
+                        rtn[x] = tmp
+        return rtn
 
     #Displays the folders and accounts in the selected folder
     def build_dir(self, path):
@@ -51,5 +91,8 @@ class PyPass:
 
     #Concatinates the root password store path with the child path
     def build_path(self, child_path):
-        return self.gpass_config.password_store + '/' + child_path
-    
+        tmp = self.gpass_config.password_store
+        if not child_path == '':
+            tmp +=  + '/' + child_path
+        print tmp
+        return tmp
