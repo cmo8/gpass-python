@@ -65,6 +65,24 @@ class PyPass:
                         rtn[x] = tmp
         return rtn
 
+    #Builds a dictionary of the files that contain the search_tokens
+    def build_gpg_tree(self, path):
+        rtn = {}
+        #pulls the current
+        stream = os.listdir(path)
+        stream.sort()
+        for x in stream:
+            #Skip hiden files
+            if not x.startswith("."):
+                #checks if x is a file
+                if not os.path.isdir(path + "/" + x):
+                    file_name = x[:-4]
+                    rtn[file_name] = path + '/' + x
+                else:
+                    #print "else -> " + path + "/" + x
+                    rtn[x] = self.build_gpg_tree(path + "/" + x)
+        return rtn
+
     #Displays the folders and accounts in the selected folder
     def build_dir(self, path):
         rtn = []
@@ -93,6 +111,6 @@ class PyPass:
     def build_path(self, child_path):
         tmp = self.gpass_config.password_store
         if not child_path == '':
-            tmp +=  + '/' + child_path
-        print tmp
+            tmp +=  '/' + child_path
+        #print tmp
         return tmp
