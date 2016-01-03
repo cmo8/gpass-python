@@ -36,6 +36,21 @@ class PyPass:
         print resuts
         return resuts
 
+    #Create a folder
+    def createFolder(self, folder, path):
+        physical_path = self.build_path(path)
+        #print "Physical path: ", physical_path
+        dir_list = self.build_dir(physical_path)
+        #print dir_list
+        if folder + "/" not in dir_list:
+            if not physical_path.endswith("/"):
+                physical_path += "/"
+            physical_path += folder
+            print physical_path
+            os.makedirs(physical_path)
+        else:
+            print "!!Warning!! Folder already exists"
+
     #Searches the file for the given search tokens
     def search_file(self, file_name, search_tokens):
         for token in search_tokens:

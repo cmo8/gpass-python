@@ -4,36 +4,29 @@ from createAccountUI import CreateAccountUI
 from popcreateaccount import popCreateAccount
 from popdelete import PopDelete
 from popadditem import PopAddItem
-#TODO: Change the account button method to Gkt.Expander
-#TODO: Add a config Screen
-#TODO: Add a Remove selected items
-#TODO: Show what account is selected
-#TODO: Add Create Folder functionality
-#TODO: Add Headerbar
-#TODO: Add Git suport
-#TODO: Add Create password store
-#TODO: Add multiple GPG key suport
-class MainPassUI:
+from popfolder import PopFolder
+
+class BoxPassStore(Gtk.VBox):
 
     #Constructor
     def __init__(self, config):
+        Gtk.VBox.__init__(self, 10)
         #Create PyPass object
         self.gpass_config = config
         self.pypas = PyPass(self.gpass_config)
         self.passDepth = []
         self.openAccount = None
         self.passBtnArray = {}
+        self.breadcrumbsBtnArray = {}
         self.accountElements = {}
+
         #Building UI
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("mainPassUI.glade")
+        self.builder.add_from_file("boxPassStore.glade")
         self.builder.connect_signals(self)
         #Application Window
-        self.awindow = self.builder.get_object("applicationwindow1")
-        self.awindow.set_default_size (700, 350);
-        self.awindow.set_position(Gtk.WindowPosition.CENTER)
-        self.awindow.connect("destroy", Gtk.main_quit)
-        self.awindow.set_title("GPass")
+        self.passStorePanel = self.builder.get_object("passStorePanel")
+        self.add(self.passStorePanel)
         #Grids
         self.gridData = self.builder.get_object("gridData")
         #Boxes
@@ -45,7 +38,10 @@ class MainPassUI:
         self.btnUpdate = self.builder.get_object("btnUpdate")
         self.btnAddItem = self.builder.get_object("btnAddItem")
         self.btnDelete = self.builder.get_object("btnDelete")
-        #self.popDelete = PopDelete(self.btnDelete, self.pypas)
+        #Status bar
+        self.locationbreadcrumbs = self.builder.get_object("buttonbox")
+        self.statusbar = self.builder.get_object("status")
+        self.context = self.statusbar.get_context_id("example")
         self.btnDelete.set_sensitive(False)
         self.btnUpdate.set_sensitive(False)
         self.btnAddItem.set_sensitive(False)
@@ -62,64 +58,76 @@ class MainPassUI:
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
+        self.clear_status()
         self.clear_account_info()
         popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path(), self.pypas)
         popcreateaccount.show()
-        print 'btnNew_clicked'
+        #print 'btnNew_clicked'
 
     #Add Item Button Click Handler
     def btnAddItem_clicked(self, button):
+        self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
         popadditem = PopAddItem(self, self.btnAddItem, self.pypas, self.txtFile.get_text(start, end, True))
         popadditem.show()
-        print "btnAddItem_clicked"
+        #print "btnAddItem_clicked"
 
     #Copy the Password to the Clipboard Button Click Handler
     def btnCopyToClipboard_clicked(self, button):
+        self.clear_status()
         self.clipboard.set_text(self.txtPassword.get_text(), -1)
-        print 'btnCopyToClipboard_clicked'
+        #print 'btnCopyToClipboard_clicked'
 
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
+        self.clear_status()
         popDelete =  PopDelete(self, self.btnDelete, self.pypas)
         popDelete.show()
-        print 'btnDelete_clicked'
+        #print 'btnDelete_clicked'
 
     #Update Button Click Handler
     def btnUpdate_clicked(self, button):
+        self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
         self.pypas.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
         self.clear_account_info(False)
         self.displayAccount(self.get_pass_path())
-        print 'btnUpdate_clicked'
+        #print 'btnUpdate_clicked'
 
     #Button Handler for a PGP password file
     def btnPGP_clicked(self, button):
+        self.clear_status()
         self.clear_account_info()
         self.openAccount = button.get_label()
         self.displayAccount(self.get_pass_path())
 
     #Move into a selected folder
-    def btnFolder_clicked(self, button):
-        self.passDepth.append(button.get_label())
-        self.repack_buttons()
+    def btnFolder_clicked(self, button, event):
+        self.clear_status()
+        if event.button == 1:
+            self.passDepth.append(button.get_label())
+            self.repack_buttons()
+        elif event.button == 3:
+            foldermenu = PopFolder(self, self.listbox, self.pypas)
+            foldermenu.show()
 
     #Update Button Click Handler
     def btnBack_clicked(self, button):
+        self.clear_status()
         self.passDepth.pop()
         self.repack_buttons()
         self.clear_account_info()
     #
     def btnMenu_clicked(self, button):
+        self.clear_status()
         print "btnMenu_clicked"
 
     #Handler for the search entity
     def txtSearch_search_changed(self, txt):
-        print "Search: ", self.txtSearch.get_text()
+        self.new_status("Search: " + self.txtSearch.get_text())
         tmp = self.pypas.find(self.txtSearch.get_text())
-        print tmp
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
@@ -178,13 +186,9 @@ class MainPassUI:
         active = self.checkShow.get_active()
         self.txtPasswordBox.set_visibility(active)
 
-    #Show the Window
-    def show(self):
-        self.awindow.show_all()
-
     #bring window to the top
     def bringToTop(self):
-        self.awindow.present()
+        self.present()
 
     def get_window(self):
         return self.awindow
@@ -201,13 +205,45 @@ class MainPassUI:
             self.passBtnArray[x] = Gtk.Button(x)
             if x.endswith('/'):
                 self.passBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
-                self.passBtnArray[x].connect("clicked", self.btnFolder_clicked)
+                self.passBtnArray[x].connect("button_press_event", self.btnFolder_clicked)
                 #print "Folder: ", pass_tree[x]
             else:
                 self.passBtnArray[x].connect("clicked", self.btnPGP_clicked)
                 #print "File:   ", pass_tree[x]
             self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
             self.passBtnArray[x].show()
+        self.breadcrumbs()
+
+    #Breadcrumbs Button Click
+    def breadcrumbs_clicked(self, button):
+        target_folder = button.get_label()
+        tmp = []
+        if not target_folder == "Root":
+            target_found = False
+            for x in self.passDepth:
+                if not target_found:
+                    tmp.append(x)
+                    if x == target_folder:
+                        target_found = True
+        self.passDepth = tmp
+        self.repack_buttons()
+
+    #Create Breadcrumbs
+    def breadcrumbs(self):
+        for x in self.breadcrumbsBtnArray:
+            self.locationbreadcrumbs.remove(self.breadcrumbsBtnArray[x])
+        self.breadcrumbsBtnArray = {}
+        if len(self.passDepth) > 0:
+            self.breadcrumbsBtnArray["root"] = Gtk.Button("Root")
+            self.breadcrumbsBtnArray["root"].set_relief(Gtk.ReliefStyle.NONE)
+            self.breadcrumbsBtnArray["root"].connect("clicked", self.breadcrumbs_clicked)
+            self.locationbreadcrumbs.add(self.breadcrumbsBtnArray["root"])
+            for x in self.passDepth:
+                self.breadcrumbsBtnArray[x] = Gtk.Button(x)
+                self.breadcrumbsBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
+                self.breadcrumbsBtnArray[x].connect("clicked", self.breadcrumbs_clicked)
+                self.locationbreadcrumbs.add(self.breadcrumbsBtnArray[x])
+        self.locationbreadcrumbs.show_all()
 
     #repack the buttons from the boxlist
     def repack_buttons(self):
@@ -227,6 +263,14 @@ class MainPassUI:
         if self.openAccount != None:
             path += self.openAccount
             path += ".gpg"
-        print path
+        #print path
         return path
 
+    #Push Status
+    def new_status(self, statusMSG):
+        self.clear_status()
+        self.statusbar.push(self.context, statusMSG)
+
+    #Clear Status bar
+    def clear_status(self):
+        self.statusbar.remove_all(self.context)

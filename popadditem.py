@@ -19,7 +19,8 @@ class PopAddItem:
         value = self.txtValue.get_text()
         self.data += key.lower() + ': ' + value + '\n'
         self.pypas.insert(self.parent.get_pass_path(), self.data)
-        print "Add Item"
+        self.parent.new_status("Added:" + key + ": " + value)
+        #print "Add Item"
         self.parent.clear_account_info(False)
         self.parent.displayAccount(self.parent.get_pass_path())
         self.popAddItem.hide()
@@ -55,5 +56,6 @@ class PopAddItem:
 
     #Show the menu
     def show(self):
+        self.parent.clear_status()
         self.popAddItem.show_all()
 

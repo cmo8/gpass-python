@@ -7,9 +7,20 @@ from pprint import pprint
 
 class GPGkey:
     #Constructor
-    def __init__(self, gpgbinary, gpghome, key):
+    def __init__(self, gpgbinary, gpghome):
         self.gpg = gnupg.GPG(gpgbinary, gpghome)
+
+    #Set the Default Key
+    def set_default_key(key):
         self.key = key
+
+    def list_keys(self):
+        rtn = {}
+        pub_key = self.gpg.list_keys()
+        for key in pub_key:
+            #print "KeyID:", type(key['keyid'])
+            rtn[key['keyid']] = key['uids'][0]
+        return rtn
 
     #Displays a summery of all the public keys
     def list_public_keys(self):
