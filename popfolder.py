@@ -17,11 +17,11 @@ class PopFolder:
             self.parent.repack_buttons()
             self.popFolder.hide()
         else:
-            print "No new folder entered"
+            print("No new folder entered")
 
     #Button Cancel Folder click event
     def cancel_clicked(self, button, name):
-        print "Cancel Delete"
+        print("Cancel Delete")
         self.popFolder.hide()
 
     #Create the Delete poperover confirm menu

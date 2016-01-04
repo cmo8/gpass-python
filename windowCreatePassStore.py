@@ -23,7 +23,7 @@ class DialogCreatePassStore(Gtk.Dialog):
         self.locationGroup.add(self.btnLocationSelect)
 
     def btnLocationSelect_Clicked(self, button):
-        print 'btnLocationSelect_Clicked'
+        print('btnLocationSelect_Clicked')
 
     #Show the Window
     def show(self):

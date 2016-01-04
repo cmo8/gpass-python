@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gdk
 from pypass import PyPass
-from createAccountUI import CreateAccountUI
+#from createAccountUI import CreateAccountUI
 from popcreateaccount import popCreateAccount
 from popdelete import PopDelete
 from popadditem import PopAddItem
@@ -62,7 +62,7 @@ class BoxPassStore(Gtk.VBox):
         self.clear_account_info()
         popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path(), self.pypas)
         popcreateaccount.show()
-        #print 'btnNew_clicked'
+        #print('btnNew_clicked')
 
     #Add Item Button Click Handler
     def btnAddItem_clicked(self, button):
@@ -71,20 +71,20 @@ class BoxPassStore(Gtk.VBox):
         end = self.txtFile.get_end_iter()
         popadditem = PopAddItem(self, self.btnAddItem, self.pypas, self.txtFile.get_text(start, end, True))
         popadditem.show()
-        #print "btnAddItem_clicked"
+        #print("btnAddItem_clicked")
 
     #Copy the Password to the Clipboard Button Click Handler
     def btnCopyToClipboard_clicked(self, button):
         self.clear_status()
         self.clipboard.set_text(self.txtPassword.get_text(), -1)
-        #print 'btnCopyToClipboard_clicked'
+        #print('btnCopyToClipboard_clicked')
 
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
         self.clear_status()
         popDelete =  PopDelete(self, self.btnDelete, self.pypas)
         popDelete.show()
-        #print 'btnDelete_clicked'
+        #print('btnDelete_clicked')
 
     #Update Button Click Handler
     def btnUpdate_clicked(self, button):
@@ -94,7 +94,7 @@ class BoxPassStore(Gtk.VBox):
         self.pypas.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
         self.clear_account_info(False)
         self.displayAccount(self.get_pass_path())
-        #print 'btnUpdate_clicked'
+        #print('btnUpdate_clicked')
 
     #Button Handler for a PGP password file
     def btnPGP_clicked(self, button):
@@ -122,7 +122,7 @@ class BoxPassStore(Gtk.VBox):
     #
     def btnMenu_clicked(self, button):
         self.clear_status()
-        print "btnMenu_clicked"
+        print("btnMenu_clicked")
 
     #Handler for the search entity
     def txtSearch_search_changed(self, txt):
@@ -206,10 +206,10 @@ class BoxPassStore(Gtk.VBox):
             if x.endswith('/'):
                 self.passBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
                 self.passBtnArray[x].connect("button_press_event", self.btnFolder_clicked)
-                #print "Folder: ", pass_tree[x]
+                #print("Folder: ", pass_tree[x])
             else:
                 self.passBtnArray[x].connect("clicked", self.btnPGP_clicked)
-                #print "File:   ", pass_tree[x]
+                #print("File:   ", pass_tree[x])
             self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
             self.passBtnArray[x].show()
         self.breadcrumbs()
@@ -263,7 +263,7 @@ class BoxPassStore(Gtk.VBox):
         if self.openAccount != None:
             path += self.openAccount
             path += ".gpg"
-        #print path
+        #print(path)
         return path
 
     #Push Status

@@ -20,7 +20,7 @@ class PopAddItem:
         self.data += key.lower() + ': ' + value + '\n'
         self.pypas.insert(self.parent.get_pass_path(), self.data)
         self.parent.new_status("Added:" + key + ": " + value)
-        #print "Add Item"
+        #print("Add Item")
         self.parent.clear_account_info(False)
         self.parent.displayAccount(self.parent.get_pass_path())
         self.popAddItem.hide()

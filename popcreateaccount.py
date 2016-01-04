@@ -60,37 +60,37 @@ class popCreateAccount:
         if self.txtAccount.get_text() == "":
             #self.txtAccountBox.
             self.parent.new_status("Error No Account information")
-            #print "Error No Account information"
+            #print("Error No Account information")
         elif self.txtPassword.get_text() == "":
             self.parent.new_status("Error No Password Entered")
-            #print "Error No Password Entered"
+            #print("Error No Password Entered")
         elif self.txtConfirm.get_text() == "":
             self.parent.new_status("Error No Confirmation Password")
-            #print "Error No Confirmation Password"
+            #print("Error No Confirmation Password")
         elif self.txtPassword.get_text() == self.txtConfirm.get_text():
             if len(self.path) > 0:
                 self.path += "/"
             self.path += self.txtAccount.get_text() + '.gpg'
             self.pypas.insert(self.path, self.txtPassword.get_text() + '\n')
             self.parent.new_status("Saved Account:" + self.txtAccount.get_text())
-            #print "Save Account"
+            #print("Save Account")
             self.parent.repack_buttons()
             self.popCreate.hide()
         else:
             self.parent.new_status("Error Passwords do not match")
-            #print "Error Passwords do not match"
+            #print("Error Passwords do not match")
 
     #Show And Hide Password Button Click Handler
     def btnCancel_clicked(self, button):
         self.popCreate.hide()
-        #print 'btnCancel_clicked'
+        #print('btnCancel_clicked')
 
     #Show And Hide Password Button Click Handler
     def btnGeneratePassword_clicked(self, button):
         gen = "R@nd0m"
         self.txtPassword.set_text(gen)
         self.txtConfirm.set_text(gen)
-        #print 'btnGeneratePassword_clicked'
+        #print('btnGeneratePassword_clicked')
         self.btnSave.grab_focus()
 
     #Show and hide the

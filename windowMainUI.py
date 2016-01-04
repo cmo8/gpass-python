@@ -17,7 +17,7 @@ class WindowMainUI(Gtk.ApplicationWindow):
         config_loaded = self.gpass_config.load_config()
         #self.startBox = BoxStart()
 
-        print config_loaded
+        print(config_loaded)
         self.gpass_config.config_test()
         if not config_loaded:
             self.startBox = BoxStart(self.gpass_config)

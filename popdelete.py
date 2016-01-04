@@ -13,12 +13,12 @@ class PopDelete:
     def on_delete_yes_button_toggled(self, button, name):
         self.pypas.delete(self.parent.get_pass_path())
         self.parent.repack_buttons()
-        print "Yes Delete"
+        print("Yes Delete")
         self.popDelete.hide()
 
     #Button No click event
     def on_delete_no_button_toggled(self, button, name):
-        print "Cancel Delete"
+        print("Cancel Delete")
         self.popDelete.hide()
 
     #Create the Delete poperover confirm menu

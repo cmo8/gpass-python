@@ -15,7 +15,7 @@ class ExpandDir(Gtk.Window):
         self.passConfig = GPassConfig()
         self.pypass = PyPass(self.passConfig)
         listdir = self.pypass.build_gpg_tree(self.passConfig.password_store)
-        print listdir
+        print(listdir)
         self.password_store_dir = Gtk.Expander()
         self.password_store_dir.set_label("Password Store")
         self.children = Gtk.VBox(10)
@@ -31,9 +31,9 @@ class ExpandDir(Gtk.Window):
 
     def build_expand(self, listdir, ui):
         for d in listdir:
-            print (type(listdir))
+            print(type(listdir))
             if type(listdir[d]) == type({}):
-                print " - ", d, " => ", listdir[d]
+                print(" - ", d, " => ", listdir[d])
                 expander = Gtk.Expander()
                 expander.set_label(d)
                 box = Gtk.VBox(10)
@@ -41,7 +41,7 @@ class ExpandDir(Gtk.Window):
                 ui.add(expander)
                 self.build_expand(listdir[d], box)
             else:
-                print "+ ", d
+                print("+ ", d)
                 btn = Gtk.Button(d)
                 btn.connect("clicked", self.btnPGP_clicked)
                 ui.add(btn)

@@ -1,5 +1,8 @@
 #TODO
 
+##Critical Priority
+- Refactor code to Python 3
+
 ##High Priority
 - Add a Remove selected items
 - Add Git suport

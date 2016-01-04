@@ -17,44 +17,44 @@ class PyPass:
     def insert(self, account, message):
         if not message.endswith('\n'):
             message += '\n'
-        print "Entering Insert"
+        print("Entering Insert")
         out = self.gpg.encrypt_to_file(message, self.build_path(account))
 
     #Deletes the selected account
     def delete(self, account):
         if not os.path.isdir(self.build_path(account)):
             os.remove(self.build_path(account))
-            print "Deleted: ", self.build_path(account)
+            print("Deleted: ", self.build_path(account))
         else:
-            print "Failed Delete: Not a File - ", self.build_path(account)
+            print("Failed Delete: Not a File - ", self.build_path(account))
 
     #Search the password database for matches
     def find(self, search):
         search_tokens = search.split()
-        #print "Tokens: ", search_tokens
+        #print("Tokens: ", search_tokens)
         resuts = self.build_gpg_list(self.build_path(''), search_tokens)
-        print resuts
+        print(resuts)
         return resuts
 
     #Create a folder
     def createFolder(self, folder, path):
         physical_path = self.build_path(path)
-        #print "Physical path: ", physical_path
+        #print("Physical path: ", physical_path)
         dir_list = self.build_dir(physical_path)
-        #print dir_list
+        #print(dir_list)
         if folder + "/" not in dir_list:
             if not physical_path.endswith("/"):
                 physical_path += "/"
             physical_path += folder
-            print physical_path
+            print(physical_path)
             os.makedirs(physical_path)
         else:
-            print "!!Warning!! Folder already exists"
+            print("!!Warning!! Folder already exists")
 
     #Searches the file for the given search tokens
     def search_file(self, file_name, search_tokens):
         for token in search_tokens:
-            #print file_name, " => ", file_name.count(token)
+            #print(file_name, " => ", file_name.count(token))
             if file_name.count(token) > 0:
                 return True
         return False
@@ -74,7 +74,7 @@ class PyPass:
                         file_name = x[:-4]
                         rtn[file_name] = path + '/' + x
                 else:
-                    #print "else -> " + path + "/" + x
+                    #print("else -> " + path + "/" + x)
                     tmp = self.build_gpg_list(path + "/" + x, search_tokens)
                     if tmp != {}:
                         rtn[x] = tmp
@@ -94,7 +94,7 @@ class PyPass:
                     file_name = x[:-4]
                     rtn[file_name] = path + '/' + x
                 else:
-                    #print "else -> " + path + "/" + x
+                    #print("else -> " + path + "/" + x)
                     rtn[x] = self.build_gpg_tree(path + "/" + x)
         return rtn
 
@@ -112,7 +112,7 @@ class PyPass:
                     file_name = x[:-4]
                     rtn.append(file_name)
                 else:
-                    #print "else -> " + path + "/" + x
+                    #print("else -> " + path + "/" + x)
                     rtn.append(x + "/")
         rtn.sort()
         return rtn
@@ -127,5 +127,5 @@ class PyPass:
         tmp = self.gpass_config.password_store
         if not child_path == '':
             tmp +=  '/' + child_path
-        #print tmp
+        #print(tmp)
         return tmp

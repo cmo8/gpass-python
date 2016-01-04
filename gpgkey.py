@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import gnupg
-import StringIO
+#import StringIO
 from subprocess import Popen, PIPE
 from pprint import pprint
 
@@ -18,20 +18,20 @@ class GPGkey:
         rtn = {}
         pub_key = self.gpg.list_keys()
         for key in pub_key:
-            #print "KeyID:", type(key['keyid'])
+            #print("KeyID:", type(key['keyid']))
             rtn[key['keyid']] = key['uids'][0]
         return rtn
 
     #Displays a summery of all the public keys
     def list_public_keys(self):
         pub_key = self.gpg.list_keys()
-        print 'Public Keys:'
+        print('Public Keys:')
         pprint(pub_key)
 
     #Displays a summery of all the private keys
     def list_private_keys(self):
         pri_key = self.gpg.list_keys(True)
-        print 'Private Keys:'
+        print('Private Keys:')
         pprint(pri_key)
 
     #Uses the default public key to encrypt the message unless otherwise stated

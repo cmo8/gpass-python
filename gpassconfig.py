@@ -34,7 +34,7 @@ class GPassConfig:
             if self.isgpgbinary and self.isgpghome and self.ispassword_store:# and self.isgpgkey:
                 return True
         else:
-            print 'Warning: No Config file found'
+            print('Warning: No Config file found')
         return False
 
     #Reads in the config file and stores the variables.
@@ -43,7 +43,7 @@ class GPassConfig:
             for line in f:
                 if not line.startswith('#'):
                     conf = line.split(' = ')
-                    print conf
+                    print(conf)
                     if conf[0] == 'password_len':
                         self.password_len = conf[1][:-1]
                     elif conf[0] == 'char_set':
@@ -65,18 +65,18 @@ class GPassConfig:
                             self.password_store = conf[1][:-1]
 
                     elif conf[0] == 'gpgkey':
-                        print "gpgKey: " + conf[1][:-1]
+                        print("gpgKey: " + conf[1][:-1])
                         self.gpgkey = conf[1][:-1]
 
     #Test Function to display the current config
     def config_test(self):
-        print "Password Length          : ", self.password_len
-        print "Character Sets           : ", self.char_set
-        print "Active Character Sets    : ", self.live_char_set
-        print "Default PGP Binary       : ", self.gpgbinary, self.isgpgbinary
-        print "Default PGP Home         : ", self.gpghome, self.isgpghome
-        print "Default Password Store   : ", self.password_store, self.ispassword_store
-        print "Default GPG key          : ", self.gpgkey, self.isgpgkey
+        print("Password Length          : ", self.password_len)
+        print("Character Sets           : ", self.char_set)
+        print("Active Character Sets    : ", self.live_char_set)
+        print("Default PGP Binary       : ", self.gpgbinary, self.isgpgbinary)
+        print("Default PGP Home         : ", self.gpghome, self.isgpghome)
+        print("Default Password Store   : ", self.password_store, self.ispassword_store)
+        print("Default GPG key          : ", self.gpgkey, self.isgpgkey)
 
     def set_password_store(self, password_store_path):
         if self.check_password_store(password_store_path):

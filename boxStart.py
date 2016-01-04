@@ -36,10 +36,10 @@ class BoxStart(Gtk.VButtonBox):
             print("Dialog closed")
 
         dialogCreatePassStore.destroy()
-        print 'btnCreatePassStore_clicked'
+        print('btnCreatePassStore_clicked')
 
     def btnSelectPassStore_clicked(self, button):
-        print 'btnSelectPassStore_clicked'
+        print('btnSelectPassStore_clicked')
 
     def btnGitClonePassStore_clicked(self, button):
-        print 'btnGitClonePassStore_clicked'
+        print('btnGitClonePassStore_clicked')
