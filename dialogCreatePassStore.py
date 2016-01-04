@@ -37,13 +37,16 @@ class DialogCreatePassStore(Gtk.Dialog):
             self.gpgkeyGroup.add(self.lblKeys)
             name_store = Gtk.ListStore(str, str)
             for key in keys:
-                print key, "=>", keys[key]
+                #print key, "=>", keys[key]
                 name_store.append([key, keys[key]])
             self.listBoxGPGkey = Gtk.ComboBox.new_with_model_and_entry(name_store)
             self.listBoxGPGkey.connect("changed", self.listBoxGPGkey_changed)
             self.listBoxGPGkey.set_entry_text_column(1)
             self.gpgkeyGroup.add(self.listBoxGPGkey)
         else:
+            self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
+            self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGhome_Clicked)
+            self.gpgkeyGroup.add(self.btnCreateGPGhome)
             print "No: " + self.config.gpgbinary
 
 
@@ -60,6 +63,10 @@ class DialogCreatePassStore(Gtk.Dialog):
         if response == Gtk.ResponseType.OK:
             self.txtLocation.set_text(filechooserdialog.get_filename())
         filechooserdialog.destroy()
+
+    def btnCreateGPGhome_Clicked(self, button):
+        #self.gpgkeyGroup =
+        print "btnCreateGPGhome_Clicked"
 
     def listBoxGPGkey_changed(self, combo):
         tree_iter = combo.get_active_iter()
