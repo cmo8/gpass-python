@@ -1,10 +1,13 @@
 from gi.repository import Gtk
 from dialogCreatePassStore import DialogCreatePassStore
 
+from dialogClonePassStoreRepo import DialogClonePassStoreRepo
+
 class BoxStart(Gtk.VButtonBox):
 
-    def __init__(self, config):
+    def __init__(self,parent, config):
         Gtk.VButtonBox.__init__(self)
+        self.parent = parent
         self.config = config
         #self.set_spacing(20)
         self.set_layout(Gtk.ButtonBoxStyle.CENTER)
@@ -25,7 +28,7 @@ class BoxStart(Gtk.VButtonBox):
         self.pack_start(self.btnGitClonePassStore, True, True, 0)
 
     def btnCreatePassStore_clicked(self, button):
-        dialogCreatePassStore = DialogCreatePassStore(self.config)
+        dialogCreatePassStore = DialogCreatePassStore(self.parent, self.config)
         response = dialogCreatePassStore.run()
 
         if response == Gtk.ResponseType.OK:
@@ -42,4 +45,17 @@ class BoxStart(Gtk.VButtonBox):
         print('btnSelectPassStore_clicked')
 
     def btnGitClonePassStore_clicked(self, button):
-        print('btnGitClonePassStore_clicked')
+        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent, self.config)
+        response = dialogClonePassStoreRepo.run()
+
+        if response == Gtk.ResponseType.OK:
+            location = dialogClonePassStoreRepo.txtLocation.get_text()
+            repo = dialogClonePassStoreRepo.txtRepo.get_text()
+            print("Location:", location)
+            print("Repo:", repo)
+            print("OK button clicked")
+        elif response == Gtk.ResponseType.CANCEL:
+            print("Cancel button clicked")
+        else:
+            print("Dialog closed")
+        dialogClonePassStoreRepo.destroy()

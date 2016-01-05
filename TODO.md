@@ -1,11 +1,12 @@
 #TODO
 
 ##Critical Priority
-- Refactor code to Python 3
+- 
 
 ##High Priority
 - Add a Remove selected items
 - Add Git suport
+	- Need it for dialogClonePassStoreRepo.py
 - Add Create password store
 - No config first startup
         - Select/create GPG key

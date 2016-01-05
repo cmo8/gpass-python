@@ -5,8 +5,8 @@ from gpgkey import GPGkey
 class DialogCreatePassStore(Gtk.Dialog):
 
     #Constructor
-    def __init__(self, config):
-        Gtk.Dialog.__init__(self, title="Create Password Store", buttons=(Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+    def __init__(self, parent, config):
+        Gtk.Dialog.__init__(self, "Create Password Store", parent, 10,(Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
         #self.set_parent(parent)
         self.config = config
         self.set_default_size(400, 300)

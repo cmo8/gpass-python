@@ -20,7 +20,7 @@ class WindowMainUI(Gtk.ApplicationWindow):
         print(config_loaded)
         self.gpass_config.config_test()
         if not config_loaded:
-            self.startBox = BoxStart(self.gpass_config)
+            self.startBox = BoxStart(self, self.gpass_config)
             self.add(self.startBox)
         else:
             self.pypas = PyPass(self.gpass_config)
