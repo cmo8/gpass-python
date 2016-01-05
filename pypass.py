@@ -6,7 +6,8 @@ class PyPass:
     #Creates a PyPass object
     def __init__(self, config):
         self.gpass_config = config
-        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
+        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome)
+        self.gpg.set_default_key(self.gpass_config.gpgkey)
 
     #Returns an unecrypted string of the selected file
     def account(self, account):
