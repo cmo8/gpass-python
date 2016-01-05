@@ -44,7 +44,7 @@ class DialogCreatePassStore(Gtk.Dialog):
         else:
             self.gen_key = True
             #Key name folder
-            self.createGPGkey = Gtk.BoxCreateGPGKey()
+            self.createGPGkey = BoxCreateGPGKey()
             self.vlBox.attach_next_to(self.createGPGkey, self.lblKeys, Gtk.PositionType.RIGHT, 3, 1)
         
         #Git Group
