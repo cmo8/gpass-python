@@ -73,8 +73,8 @@ class GPassConfig:
         print("Password Length          : ", self.password_len)
         print("Character Sets           : ", self.char_set)
         print("Active Character Sets    : ", self.live_char_set)
-        print("Default PGP Binary       : ", self.gpgbinary, self.isgpgbinary)
-        print("Default PGP Home         : ", self.gpghome, self.isgpghome)
+        print("Default GPG Binary       : ", self.gpgbinary, self.isgpgbinary)
+        print("Default GPG Home         : ", self.gpghome, self.isgpghome)
         print("Default Password Store   : ", self.password_store, self.ispassword_store)
         print("Default GPG key          : ", self.gpgkey, self.isgpgkey)
 

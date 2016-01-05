@@ -11,7 +11,7 @@ class GPGkey:
         self.gpg = gnupg.GPG(gpgbinary, gpghome)
 
     #Set the Default Key
-    def set_default_key(key):
+    def set_default_key(self, key):
         self.key = key
 
     def list_keys(self):
