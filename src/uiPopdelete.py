@@ -1,17 +1,17 @@
 from gi.repository import Gtk
-from pypass import PyPass
+#from gpasss import PyPass
 
 class PopDelete:
     #Constructor
-    def __init__(self, parent, btn, pypas):
+    def __init__(self, parent, btn):
         self.parent = parent
-        self.pypas = pypas
+        self.gpass = self.parent.gpass
         self.btn = btn
         self.popDelete = self.create_delete_popover_menu()
 
     #Button Yes click event
     def on_delete_yes_button_toggled(self, button, name):
-        self.pypas.delete(self.parent.get_pass_path())
+        self.gpass.delete(self.parent.get_pass_path())
         self.parent.repack_buttons()
         print("Yes Delete")
         self.popDelete.hide()

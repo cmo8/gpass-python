@@ -1,12 +1,14 @@
+import random
+import string
 from gi.repository import Gtk
-from pypass import PyPass
+#from gpasss import PyPass
 
 class popCreateAccount:
 
     #Constructor
-    def __init__(self, parent, btn, path, pypas):
+    def __init__(self, parent, btn, path):
         self.parent = parent
-        self.pypas = pypas
+        self.gpass = self.parent.gpass
         self.path = path
         self.btn = btn
         #Text Buffers
@@ -68,10 +70,10 @@ class popCreateAccount:
             self.parent.new_status("Error No Confirmation Password")
             #print("Error No Confirmation Password")
         elif self.txtPassword.get_text() == self.txtConfirm.get_text():
-            if len(self.path) > 0:
+            if len(self.path) == 0:
                 self.path += "/"
             self.path += self.txtAccount.get_text() + '.gpg'
-            self.pypas.insert(self.path, self.txtPassword.get_text() + '\n')
+            self.gpass.insert(self.path, self.txtPassword.get_text() + '\n')
             self.parent.new_status("Saved Account:" + self.txtAccount.get_text())
             #print("Save Account")
             self.parent.repack_buttons()
@@ -88,6 +90,8 @@ class popCreateAccount:
     #Show And Hide Password Button Click Handler
     def btnGeneratePassword_clicked(self, button):
         gen = "R@nd0m"
+        char_set = self.parent.config.get_active_char_group()
+        gen = ''.join(random.sample(char_set*6, self.parent.config.get_pass_length()))
         self.txtPassword.set_text(gen)
         self.txtConfirm.set_text(gen)
         #print('btnGeneratePassword_clicked')

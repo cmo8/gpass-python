@@ -3,11 +3,11 @@ import sys
 import gi
 gi.require_version('Gtk', '3.0')
 
-from appgpass import AppGPass
+from gPassApplication import GPassApplication
 
 #Starts the Application
 def main():
-    app = AppGPass()
+    app = GPassApplication()
     app.run(sys.argv)
 
 if __name__ =='__main__':main()

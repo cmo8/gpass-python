@@ -1,13 +1,13 @@
 from gi.repository import Gtk
-from pypass import PyPass
+#from gpasss import PyPass
 
 class PopAddItem:
 
     #ConstructorPopAddItem
-    def __init__(self, parent, btn, pypas, data):
+    def __init__(self, parent, btn, data):
         self.parent = parent
+        self.gpass = self.parent.gpass
         self.btn = btn
-        self.pypas = pypas
         self.data = data
         self.txtKey = Gtk.Entry()
         self.txtValue = Gtk.Entry()
@@ -18,7 +18,7 @@ class PopAddItem:
         key = self.txtKey.get_text()
         value = self.txtValue.get_text()
         self.data += key.lower() + ': ' + value + '\n'
-        self.pypas.insert(self.parent.get_pass_path(), self.data)
+        self.gpass.insert(self.parent.get_pass_path(), self.data)
         self.parent.new_status("Added:" + key + ": " + value)
         #print("Add Item")
         self.parent.clear_account_info(False)

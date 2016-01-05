@@ -8,7 +8,7 @@ LOCALE=/usr/share
 MAIN=main.py
 
 run:
-	python $(MAIN)
+	python3 src/$(MAIN)
 
 testh:
 	mkdir -p $(HOME)/usr
@@ -39,4 +39,8 @@ uninstall:
 	rmdir $(IMAGES)
 	rmdir $(BASE)
 
-
+setup:
+	sudo python3 -m pip install gitpython
+	sudo python3 -m pip install python-gnupg
+	sudo dnf install redhat-rpm-config
+	sudo python3 -m pip install gittle

@@ -1,19 +1,20 @@
 from gi.repository import Gtk, Gdk
-from pypass import PyPass
+#from gPass import GPass
 #from createAccountUI import CreateAccountUI
-from popcreateaccount import popCreateAccount
-from popdelete import PopDelete
-from popadditem import PopAddItem
-from popfolder import PopFolder
+from uiPopcreateaccount import popCreateAccount
+from uiPopdelete import PopDelete
+from uiPopadditem import PopAddItem
+from uiPopfolder import PopFolder
 
 class BoxPassStore(Gtk.VBox):
 
     #Constructor
-    def __init__(self, config):
+    def __init__(self, parent):
         Gtk.VBox.__init__(self, 10)
         #Create PyPass object
-        self.gpass_config = config
-        self.pypas = PyPass(self.gpass_config)
+        self.parent = parent
+        self.config = self.parent.config
+        self.gpass = self.parent.gpass
         self.passDepth = []
         self.openAccount = None
         self.passBtnArray = {}
@@ -22,7 +23,7 @@ class BoxPassStore(Gtk.VBox):
 
         #Building UI
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("boxPassStore.glade")
+        self.builder.add_from_file("src/uiBoxPassStore.glade")
         self.builder.connect_signals(self)
         #Application Window
         self.passStorePanel = self.builder.get_object("passStorePanel")
@@ -46,6 +47,23 @@ class BoxPassStore(Gtk.VBox):
         self.btnUpdate.set_sensitive(False)
         self.btnAddItem.set_sensitive(False)
         #self.btnMene = self.builder.get_object("btnMene")
+        self.tvAdvalible = self.builder.get_object("tvAdvalible")
+        self.tvLive = self.builder.get_object("tvLive")
+        self.lsLive = Gtk.ListStore(str)
+        self.lsAdvalible = Gtk.ListStore(str)
+        self.tvAdvalible.set_model(self.lsAdvalible)
+        self.tvLive.set_model(self.lsLive)
+        treeviewcolumn = Gtk.TreeViewColumn("Advalible GPG Keys")
+        self.tvAdvalible.append_column(treeviewcolumn)
+        cellrenderertext = Gtk.CellRendererText()
+        treeviewcolumn.pack_start(cellrenderertext, True)
+        treeviewcolumn.add_attribute(cellrenderertext, "text", 0)
+
+        treeviewcolumn = Gtk.TreeViewColumn("Live GPG Keys")
+        self.tvLive.append_column(treeviewcolumn)
+        cellrenderertext = Gtk.CellRendererText()
+        treeviewcolumn.pack_start(cellrenderertext, True)
+        treeviewcolumn.add_attribute(cellrenderertext, "text", 0)
         #Text Buffers
         self.txtSearch = self.builder.get_object("txtSearch")
         self.txtPassword = self.builder.get_object("buffertxtPassword")
@@ -54,13 +72,13 @@ class BoxPassStore(Gtk.VBox):
         #Clipboard
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         #Add pass database buttons
-        self.pack_buttons(self.pypas.pass_array())
+        self.pack_buttons(self.gpass.pass_array())
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
         self.clear_status()
         self.clear_account_info()
-        popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path(), self.pypas)
+        popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path())
         popcreateaccount.show()
         #print('btnNew_clicked')
 
@@ -69,7 +87,7 @@ class BoxPassStore(Gtk.VBox):
         self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
-        popadditem = PopAddItem(self, self.btnAddItem, self.pypas, self.txtFile.get_text(start, end, True))
+        popadditem = PopAddItem(self, self.btnAddItem, self.txtFile.get_text(start, end, True))
         popadditem.show()
         #print("btnAddItem_clicked")
 
@@ -82,7 +100,7 @@ class BoxPassStore(Gtk.VBox):
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
         self.clear_status()
-        popDelete =  PopDelete(self, self.btnDelete, self.pypas)
+        popDelete =  PopDelete(self, self.btnDelete)
         popDelete.show()
         #print('btnDelete_clicked')
 
@@ -91,7 +109,7 @@ class BoxPassStore(Gtk.VBox):
         self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
-        self.pypas.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
+        self.gpass.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
         self.clear_account_info(False)
         self.displayAccount(self.get_pass_path())
         #print('btnUpdate_clicked')
@@ -110,7 +128,7 @@ class BoxPassStore(Gtk.VBox):
             self.passDepth.append(button.get_label())
             self.repack_buttons()
         elif event.button == 3:
-            foldermenu = PopFolder(self, self.listbox, self.pypas)
+            foldermenu = PopFolder(self, self.listbox)
             foldermenu.show()
 
     #Update Button Click Handler
@@ -127,12 +145,44 @@ class BoxPassStore(Gtk.VBox):
     #Handler for the search entity
     def txtSearch_search_changed(self, txt):
         self.new_status("Search: " + self.txtSearch.get_text())
-        tmp = self.pypas.find(self.txtSearch.get_text())
+        tmp = self.gpass.find(self.txtSearch.get_text())
+
+
+#################################################################################################################
+    def load_gpg_permissions(self):
+        self.lsLive.clear()
+        self.lsAdvalible.clear()
+        live = self.gpass.gpg_id(self.get_pass_path())
+        advalible = self.gpass.gpg.list_keys()
+        for l in live:
+            self.lsLive.append([l])
+        for a in advalible:
+            if a not in live:
+                self.lsAdvalible.append([a])
+        
+
+    def gpg_add_clicked(self, button):
+        selection = self.tvAdvalible.get_selection()
+        model, treeiter = selection.get_selected()
+        if treeiter != None:
+            print("You selected " + model[treeiter][0])
+            self.lsLive.append([model[treeiter][0]])
+            self.gpass.gpg_id_write(self.get_pass_path(), self.lsLive)
+            self.load_gpg_permissions()
+
+    def gpg_add_all_clicked(self, button):
+        pass
+
+    def gpg_remove_clicked(self, button):
+        pass
+
+    def gpg_remove_all_clicked(self, button):
+        pass
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
         #Get GPG file content
-        account_info = self.pypas.account(accountToDisplay)
+        account_info = self.gpass.account(accountToDisplay)
         #display contents in text editor
         self.txtFile.set_text(str(account_info))
         #Split the lines appert
@@ -213,6 +263,7 @@ class BoxPassStore(Gtk.VBox):
             self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
             self.passBtnArray[x].show()
         self.breadcrumbs()
+        self.load_gpg_permissions()
 
     #Breadcrumbs Button Click
     def breadcrumbs_clicked(self, button):
@@ -238,6 +289,8 @@ class BoxPassStore(Gtk.VBox):
             self.breadcrumbsBtnArray["root"].set_relief(Gtk.ReliefStyle.NONE)
             self.breadcrumbsBtnArray["root"].connect("clicked", self.breadcrumbs_clicked)
             self.locationbreadcrumbs.add(self.breadcrumbsBtnArray["root"])
+            print("Breadcrumbs: ")
+            print(self.passDepth)
             for x in self.passDepth:
                 self.breadcrumbsBtnArray[x] = Gtk.Button(x)
                 self.breadcrumbsBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
@@ -253,9 +306,9 @@ class BoxPassStore(Gtk.VBox):
         self.passBtnArray = {}
         if len(self.passDepth) > 0:
             path = self.get_pass_path()
-            self.pack_buttons(self.pypas.pass_array(path))
+            self.pack_buttons(self.gpass.pass_array(path))
         else:
-            self.pack_buttons(self.pypas.pass_array())
+            self.pack_buttons(self.gpass.pass_array())
 
     #get the current path
     def get_pass_path(self):

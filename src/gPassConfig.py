@@ -1,5 +1,4 @@
 import os
-from git import Repo
 
 class GPassConfig:
 
@@ -20,9 +19,9 @@ class GPassConfig:
         self.ispassword_store = False
         self.password_store = os.environ['HOME'] + '/.password-store'
         #self.password_store = ''
-        self.isgpgkey = False
-        self.gpgkey = ''
-        self.git = False
+        #self.isgpgkey = False
+        #self.gpgkey = ''
+        #self.git = False
 
     def load_config(self):
         if os.path.isfile(os.environ['HOME'] + '/.gpass.config'):
@@ -30,7 +29,7 @@ class GPassConfig:
             self.isgpgbinary = self.check_gpgbinary(self.gpgbinary)
             self.isgpghome = self.check_gpghome(self.gpghome)
             self.ispassword_store = self.check_password_store(self.password_store)
-            self.isgpgkey = self.check_gpgkey(self.gpgkey)
+            #self.isgpgkey = self.check_gpgkey(self.gpgkey)
             if self.isgpgbinary and self.isgpghome and self.ispassword_store:# and self.isgpgkey:
                 return True
         else:
@@ -39,7 +38,7 @@ class GPassConfig:
 
     #Reads in the config file and stores the variables.
     def get_config(self):
-        with open('gpass.config', 'r') as f:
+        with open(os.environ['HOME'] + '/.gpass.config', 'r') as f:
             for line in f:
                 if not line.startswith('#'):
                     conf = line.split(' = ')
@@ -64,19 +63,14 @@ class GPassConfig:
                         else:
                             self.password_store = conf[1][:-1]
 
-                    elif conf[0] == 'gpgkey':
-                        print("gpgKey: " + conf[1][:-1])
-                        self.gpgkey = conf[1][:-1]
-
     #Test Function to display the current config
     def config_test(self):
         print("Password Length          : ", self.password_len)
         print("Character Sets           : ", self.char_set)
         print("Active Character Sets    : ", self.live_char_set)
-        print("Default PGP Binary       : ", self.gpgbinary, self.isgpgbinary)
-        print("Default PGP Home         : ", self.gpghome, self.isgpghome)
+        print("Default GPG Binary       : ", self.gpgbinary, self.isgpgbinary)
+        print("Default GPG Home         : ", self.gpghome, self.isgpghome)
         print("Default Password Store   : ", self.password_store, self.ispassword_store)
-        print("Default GPG key          : ", self.gpgkey, self.isgpgkey)
 
     def set_password_store(self, password_store_path):
         if self.check_password_store(password_store_path):
@@ -99,13 +93,6 @@ class GPassConfig:
             return self.isgpghome
         return False
 
-    def set_gpgkey(self, gpgkey):
-        if self.check_gpgkey(gpgkey):
-            self.gpgkey = gpgkey
-            self.isgpgkey = True
-            return self.isgpgkey
-        return False
-
     def get_password_store(self):
         return self.password_store
 
@@ -115,12 +102,9 @@ class GPassConfig:
     def get_gpghome(self):
         return self.gpghome
 
-    def get_gpgkey(self):
-        return self.gpgkey
-
     #Write the current config to the file
     def save_config(self):
-        with open('gpass.config', 'w') as f:
+        with open(os.environ['HOME'] + '/.gpass.config', 'w') as f:
             f.write('###############################################################################\n')
             f.write('#                                Gpass Config                                 #\n')
             f.write('#                                                                             #\n')
@@ -128,7 +112,7 @@ class GPassConfig:
             f.write('#\n')
             f.write('#\n')
             f.write('#Lenght of password\n')
-            f.write('password_len = ' + self.password_len + '\n')
+            f.write('password_len = ' + str(self.password_len) + '\n')
             f.write('#\n')
             f.write('#Character Sets {char_set = Title:setOfCharacters}\n')
             for group in self.char_set:
@@ -142,9 +126,9 @@ class GPassConfig:
             f.write('#\n')
             f.write('#GPG home\n')
             f.write('gpghome = ' + self.gpghome + '\n')
-            f.write('#\n')
-            f.write('#Default GPG key\n')
-            f.write('gpgkey = ' + self.gpgkey + '\n')
+            #f.write('#\n')
+            #f.write('#Default GPG key\n')
+            #f.write('gpgkey = ' + self.gpgkey + '\n')
             f.write('#\n')
             f.write('#Pass Password Store home\n')
             f.write('password_store = ' + self.password_store + '\n')
@@ -170,11 +154,13 @@ class GPassConfig:
         if os.path.isdir(password_store):
             return True
         return False
-    # Checks if the GPG key exists
-    #TODO: check gpg key exists
-    def check_gpgkey(self, gpgkey = ""):
-        if gpgkey == "":
-            gpgkey = self.gpgkey
-        if os.path.isfile(gpgkey):
-            return True
-        return False
+
+    def get_pass_length(self):
+        return int(self.password_len)
+
+    def get_active_char_group(self):
+        rtn = ''
+        for a in self.live_char_set:
+            rtn += self.char_set[a]
+        #print(rtn)
+        return rtn

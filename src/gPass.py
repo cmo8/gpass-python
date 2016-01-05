@@ -1,12 +1,42 @@
 import os
-from gpgkey import GPGkey
-
-class PyPass:
+from gPassGPG import GPassGPG
+#from gPassGit import GPassGit
+class GPass:
 
     #Creates a PyPass object
     def __init__(self, config):
-        self.gpass_config = config
-        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome, self.gpass_config.gpgkey)
+        self.config = config
+        self.gpg = GPassGPG(self.config.gpgbinary, self.config.gpghome)
+        #self.git = GPassGit(self.config.get_password_store())
+
+    def create(self, gpgkey, folderpath, setGit=False):
+        os.mkdir(folderpath)
+        self.config.set_password_store(folderpath)
+        if setGit:
+            print("Creating Git Repo...")
+            #self.git.init(folderpath)
+        self.add_gpg_key(gpgkey, self.config.get_password_store())
+
+        #print('create')
+
+    def add_gpg_key(self, gpgkey, folder):
+        filepath = folder + '/.gpg-id'
+        content = [];
+        if os.path.isdir(filepath):
+            with open(filepath, 'r') as f:
+                content = f.readlines()
+        #print(content)
+        if not any(gpgkey in s for s in content):
+            content.append(gpgkey)
+        with open(filepath, 'w') as f:
+            con_str = ""
+            for key in content:
+                con_str += key
+                con_str += '\n'
+            f.write(con_str)
+        #if self.git.isRepoSet():
+        #    self.git.acp(filepath, "Added GPG key to '" + folder + "' folder")
+        #print('add_gpg_key')
 
     #Returns an unecrypted string of the selected file
     def account(self, account):
@@ -17,8 +47,15 @@ class PyPass:
     def insert(self, account, message):
         if not message.endswith('\n'):
             message += '\n'
-        print("Entering Insert")
-        out = self.gpg.encrypt_to_file(message, self.build_path(account))
+        keys = self.check_gpgkeys(account)
+        msg = ""
+        if os.path.isfile(self.build_path(account)):
+            msg = "Inserted user account '" + account + "'"
+        else:
+            msg = "Updated user account '" + account + "'"
+        out = self.gpg.encrypt_to_file(message, self.build_path(account), keys)
+        #if self.git.isRepoSet():
+        #    self.git.acp(self.build_path(account), msg)
 
     #Deletes the selected account
     def delete(self, account):
@@ -33,7 +70,7 @@ class PyPass:
         search_tokens = search.split()
         #print("Tokens: ", search_tokens)
         resuts = self.build_gpg_list(self.build_path(''), search_tokens)
-        print(resuts)
+        #print(resuts)
         return resuts
 
     #Create a folder
@@ -46,7 +83,7 @@ class PyPass:
             if not physical_path.endswith("/"):
                 physical_path += "/"
             physical_path += folder
-            print(physical_path)
+            #print(physical_path)
             os.makedirs(physical_path)
         else:
             print("!!Warning!! Folder already exists")
@@ -117,6 +154,33 @@ class PyPass:
         rtn.sort()
         return rtn
 
+    def gpg_id(self, path):
+        gpgid = self.build_path(path) + '/.gpg-id'
+        #print(gpgid)
+        tmp = []
+        if os.path.isfile(gpgid):
+            with open(gpgid, 'r') as f:
+                tmp = f.readlines()
+        else:
+            with open(self.config.get_password_store() + '/.gpg-id') as f:
+                tmp = f.readlines()
+        #print(tmp)
+        rtn = []
+        for a in tmp:
+            if a.endswith("\n"):
+                rtn.append(a[:-1])
+            else:
+                rtn.append(a)
+        #print(rtn)
+        return rtn
+
+    def gpg_id_write(self, path, gpgid):
+        gpgid_path = self.build_path(path) + '/.gpg-id'
+        print("Writing..." + gpgid_path)
+        with open(gpgid_path, 'w') as f:
+            for key in gpgid:
+                f.write(key[0] + '\n')
+
     #Returns an array of the items in the directory location
     def pass_array(self, child_path = ""):
         dir_items = self.build_dir(self.build_path(child_path))
@@ -124,8 +188,25 @@ class PyPass:
 
     #Concatinates the root password store path with the child path
     def build_path(self, child_path):
-        tmp = self.gpass_config.password_store
+        tmp = self.config.password_store
         if not child_path == '':
             tmp +=  '/' + child_path
         #print(tmp)
         return tmp
+
+    def check_gpgkeys(self, folderpath):
+        tmp = []
+        keys = []
+        gpg_id = folderpath + '/.gpg-id'
+        #print("GPG ID: " + gpg_id)
+        if os.path.isfile(gpg_id):
+            with open(gpg_id, 'r') as f:
+                tmp = f.readlines()
+        else:
+            with open(self.config.password_store + '/.gpg-id', 'r') as f:
+                tmp = f.readlines()
+        for tp in tmp:
+            keys.append(tp[:-1])
+        #print("GPG Keys:")
+        #print(keys)
+        return keys
