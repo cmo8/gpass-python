@@ -1,3 +1,4 @@
+import os
 from gi.repository import Gtk
 from gpgkey import GPGkey
 from dialogCreatePassStore import DialogCreatePassStore
