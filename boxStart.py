@@ -33,7 +33,7 @@ class BoxStart(Gtk.VButtonBox):
     def btnCreatePassStore_clicked(self, button):
         keys = self.gpg.list_keys()
         dialogCreatePassStore = DialogCreatePassStore(self.parent, self.config, keys)
-        loop_continue = false
+        loop_continue = False
         while not loop_continue:
             response = dialogCreatePassStore.run()
             if response == Gtk.ResponseType.OK:
