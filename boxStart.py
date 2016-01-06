@@ -65,7 +65,6 @@ class BoxStart(Gtk.VButtonBox):
                 loop_continue = True
                 print("Dialog closed")
             pass
-
         dialogCreatePassStore.destroy()
         print('btnCreatePassStore_clicked')
 

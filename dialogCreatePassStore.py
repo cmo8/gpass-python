@@ -76,9 +76,9 @@ class DialogCreatePassStore(Gtk.Dialog):
             self.txtPasswordC = Gtk.Entry()
             self.passwordCGroup.add(self.txtPasswordC)
 
-            self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
-            self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGkey_Clicked)
-            self.gpgkeyGroup.add(self.btnCreateGPGhome)
+            #self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
+            #self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGkey_Clicked)
+            #self.gpgkeyGroup.add(self.btnCreateGPGhome)
 
         self.show_all()
 
