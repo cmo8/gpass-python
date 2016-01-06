@@ -1,6 +1,5 @@
 import os
 from gi.repository import Gtk, Gdk
-from gpgkey import GPGkey
 
 class DialogCreatePassStore(Gtk.Dialog):
     #Constructor
