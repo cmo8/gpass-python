@@ -45,7 +45,7 @@ class DialogCreatePassStore(Gtk.Dialog):
         else:
             #Key name folder
             self.keyNameGroup = Gtk.Box(10)
-            self.vlBox.add(self.keyNameGroup)
+            self.gpgkeyGroup.add(self.keyNameGroup)
             self.lblKeyName = Gtk.Label("Real Name:")
             self.keyNameGroup.add(self.lblKeyName)
             self.txtKeyName = Gtk.Entry()
@@ -53,7 +53,7 @@ class DialogCreatePassStore(Gtk.Dialog):
 
             #Select Root parent folder
             self.emailGroup = Gtk.Box(10)
-            self.vlBox.add(self.emailGroup)
+            self.gpgkeyGroup.add(self.emailGroup)
             self.lblemail = Gtk.Label("Email:")
             self.emailGroup.add(self.lblemail)
             self.txtEmail = Gtk.Entry()
@@ -61,7 +61,7 @@ class DialogCreatePassStore(Gtk.Dialog):
 
             #Select Root parent folder
             self.passwordGroup = Gtk.Box(10)
-            self.vlBox.add(self.passwordGroup)
+            self.gpgkeyGroup.add(self.passwordGroup)
             self.lblPassword = Gtk.Label("Password:")
             self.passwordGroup.add(self.lblPassword)
             self.txtPassword = Gtk.Entry()
@@ -69,7 +69,7 @@ class DialogCreatePassStore(Gtk.Dialog):
 
             #Select Root parent folder
             self.passwordCGroup = Gtk.Box(10)
-            self.vlBox.add(self.passwordCGroup)
+            self.gpgkeyGroup.add(self.passwordCGroup)
             self.lblPasswordC = Gtk.Label("Password:")
             self.passwordCGroup.add(self.lblPasswordC)
             self.txtPasswordC = Gtk.Entry()
