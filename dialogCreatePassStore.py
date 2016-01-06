@@ -2,10 +2,10 @@ import os
 from gi.repository import Gtk, Gdk
 
 class DialogCreatePassStore(Gtk.Dialog):
-    self.gen_key = False
     #Constructor
     def __init__(self, parent, config, keys):
         Gtk.Dialog.__init__(self, "Create Password Store", parent, 10,(Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+        self.gen_key = False
         self.parent = parent
         self.config = config
         self.selected_key = None
