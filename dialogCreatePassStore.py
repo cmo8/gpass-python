@@ -26,14 +26,16 @@ class DialogCreatePassStore(Gtk.Dialog):
         self.btnLocationSelect.connect("clicked", self.btnLocationSelect_Clicked)
         self.locationGroup.add(self.btnLocationSelect)
 
-        self.gpgkeyGroup = Gtk.Box(10)
+        self.gpgkeyGroup = Gtk.VBox(10)
         self.vlBox.add(self.gpgkeyGroup)
         #GPG section
         self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
         keys = self.gpg.list_keys()
         if os.path.isdir(self.config.gpghome) and len(keys) > 0:
+            elf.keysGroup = Gtk.Box(10)
+            self.gpgkeyGroup.add(self.keysGroup)
             self.lblKeys = Gtk.Label("GPG Key:")
-            self.gpgkeyGroup.add(self.lblKeys)
+            self.keysGroup.add(self.lblKeys)
             name_store = Gtk.ListStore(str, str)
             for key in keys:
                 #print(key, "=>", keys[key])
@@ -41,7 +43,7 @@ class DialogCreatePassStore(Gtk.Dialog):
             self.listBoxGPGkey = Gtk.ComboBox.new_with_model_and_entry(name_store)
             self.listBoxGPGkey.connect("changed", self.listBoxGPGkey_changed)
             self.listBoxGPGkey.set_entry_text_column(1)
-            self.gpgkeyGroup.add(self.listBoxGPGkey)
+            self.keysGroup.add(self.listBoxGPGkey)
         else:
             #Key name folder
             self.keyNameGroup = Gtk.Box(10)
@@ -103,7 +105,7 @@ class DialogCreatePassStore(Gtk.Dialog):
             print("Real Name:", real_name)
             print("Email:", email)
             self.gpg.generate_key(real_name, email, password)
-            
+
         else:
             print("Can NOT Generate Key!!")
 
