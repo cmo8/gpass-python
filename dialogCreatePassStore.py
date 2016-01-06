@@ -43,11 +43,42 @@ class DialogCreatePassStore(Gtk.Dialog):
             self.listBoxGPGkey.set_entry_text_column(1)
             self.gpgkeyGroup.add(self.listBoxGPGkey)
         else:
-            self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
-            self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGhome_Clicked)
-            self.gpgkeyGroup.add(self.btnCreateGPGhome)
-            print("No: " + self.config.gpgbinary)
+            #Key name folder
+            self.keyNameGroup = Gtk.Box(10)
+            self.vlBox.add(self.keyNameGroup)
+            self.lblKeyName = Gtk.Label("Real Name:")
+            self.keyNameGroup.add(self.lblKeyName)
+            self.txtKeyName = Gtk.Entry()
+            self.keyNameGroup.add(self.txtKeyName)
 
+            #Select Root parent folder
+            self.emailGroup = Gtk.Box(10)
+            self.vlBox.add(self.emailGroup)
+            self.lblemail = Gtk.Label("Email:")
+            self.emailGroup.add(self.lblemail)
+            self.txtEmail = Gtk.Entry()
+            self.emailGroup.add(self.txtEmail)
+
+            #Select Root parent folder
+            self.passwordGroup = Gtk.Box(10)
+            self.vlBox.add(self.passwordGroup)
+            self.lblPassword = Gtk.Label("Password:")
+            self.passwordGroup.add(self.lblPassword)
+            self.txtPassword = Gtk.Entry()
+            self.passwordGroup.add(self.txtPassword)
+
+            #Select Root parent folder
+            self.passwordCGroup = Gtk.Box(10)
+            self.vlBox.add(self.passwordCGroup)
+            self.lblPasswordC = Gtk.Label("Password:")
+            self.passwordCGroup.add(self.lblPasswordC)
+            self.txtPasswordC = Gtk.Entry()
+            self.passwordCGroup.add(self.txtPasswordC)
+
+            self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
+            self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGkey_Clicked)
+            self.gpgkeyGroup.add(self.btnCreateGPGhome)
+            #print("No: " + self.config.gpgbinary)
 
         self.show_all()
 
@@ -63,9 +94,18 @@ class DialogCreatePassStore(Gtk.Dialog):
             self.txtLocation.set_text(filechooserdialog.get_filename())
         filechooserdialog.destroy()
 
-    def btnCreateGPGhome_Clicked(self, button):
-        #self.gpgkeyGroup =
-        print("btnCreateGPGhome_Clicked")
+    def btnCreateGPGkey_Clicked(self, button):
+        real_name = self.txtKeyName.get_text()
+        email = self.txtEmail.get_text()
+        password = self.txtPassword.get_text()
+        passwordc = self.txtPasswordC.get_text()
+        if real_name != "" and email != "" and password != "" and passwordc != "" and password == passwordc:
+            print("Real Name:", real_name)
+            print("Email:", email)
+            self.gpg.generate_key(real_name, email, password)
+            
+        else:
+            print("Can NOT Generate Key!!")
 
     def listBoxGPGkey_changed(self, combo):
         tree_iter = combo.get_active_iter()
