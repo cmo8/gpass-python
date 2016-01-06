@@ -32,7 +32,7 @@ class DialogCreatePassStore(Gtk.Dialog):
         self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
         keys = self.gpg.list_keys()
         if os.path.isdir(self.config.gpghome) and len(keys) > 0:
-            elf.keysGroup = Gtk.Box(10)
+            self.keysGroup = Gtk.Box(10)
             self.gpgkeyGroup.add(self.keysGroup)
             self.lblKeys = Gtk.Label("GPG Key:")
             self.keysGroup.add(self.lblKeys)
