@@ -127,7 +127,7 @@ class GPassConfig:
             f.write('#\n')
             f.write('#\n')
             f.write('#Lenght of password\n')
-            f.write('password_len = ' + self.password_len + '\n')
+            f.write('password_len = ' + str(self.password_len) + '\n')
             f.write('#\n')
             f.write('#Character Sets {char_set = Title:setOfCharacters}\n')
             for group in self.char_set:

@@ -7,7 +7,7 @@ from dialogClonePassStoreRepo import DialogClonePassStoreRepo
 
 class BoxStart(Gtk.VButtonBox):
 
-    def __init__(self,parent, config):
+    def __init__(self, parent, config):
         Gtk.VButtonBox.__init__(self)
         self.parent = parent
         self.config = config
@@ -33,6 +33,7 @@ class BoxStart(Gtk.VButtonBox):
 
     def btnCreatePassStore_clicked(self, button):
         keys = self.gpg.list_keys()
+        self.gpg.list_public_keys()
         dialogCreatePassStore = DialogCreatePassStore(self.parent, self.config, keys)
         
         loop_continue = False
@@ -41,10 +42,10 @@ class BoxStart(Gtk.VButtonBox):
             if response == Gtk.ResponseType.OK:
                 real_name = ''
                 if dialogCreatePassStore.gen_key:
-                    real_name = dialogCreatePassStore.txtKeyName.get_text()
-                    email = dialogCreatePassStore.txtEmail.get_text()
-                    password = dialogCreatePassStore.txtPassword.get_text()
-                    passwordc = dialogCreatePassStore.txtPasswordC.get_text()
+                    real_name = dialogCreatePassStore.createGPGkey.get_real_name()
+                    email = dialogCreatePassStore.createGPGkey.get_email()
+                    password = dialogCreatePassStore.createGPGkey.get_password()
+                    passwordc = dialogCreatePassStore.createGPGkey.get_confirmation()
                     if real_name != "" and email != "" and password != "" and passwordc != "" and password == passwordc:
                         print("Real Name:", real_name)
                         print("Email:", email)
@@ -53,12 +54,11 @@ class BoxStart(Gtk.VButtonBox):
                         loop_continue = True
                     else:
                         print("Can NOT Generate Key!!")
+                        pass
                 else:
                     real_name = dialogCreatePassStore.selected_key
                     loop_continue = True
-                self.config.set_password_store(dialogCreatePassStore.txtLocation.get_text())
-                print("Password Store Home:", )
-                os.mkdir(self.config.get_password_store)
+                self.parent.pypas.create(real_name, dialogCreatePassStore.txtLocation.get_text())
                 print("OK button clicked")
             elif response == Gtk.ResponseType.CANCEL:
                 loop_continue = True
@@ -66,8 +66,9 @@ class BoxStart(Gtk.VButtonBox):
             else:
                 loop_continue = True
                 print("Dialog closed")
-            pass
         dialogCreatePassStore.destroy()
+        self.config.save_config()
+        self.parent.setPassStoreView()
         print('btnCreatePassStore_clicked')
 
     def btnSelectPassStore_clicked(self, button):

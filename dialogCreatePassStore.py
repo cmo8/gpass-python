@@ -1,5 +1,6 @@
 import os
 from gi.repository import Gtk, Gdk
+from boxCreateGPGKey import BoxCreateGPGKey
 
 class DialogCreatePassStore(Gtk.Dialog):
     #Constructor
@@ -45,36 +46,36 @@ class DialogCreatePassStore(Gtk.Dialog):
         else:
             self.gen_key = True
             #Key name folder
-            self.keyNameGroup = Gtk.Box(10)
-            self.gpgkeyGroup.add(self.keyNameGroup)
-            self.lblKeyName = Gtk.Label("Real Name:")
-            self.keyNameGroup.add(self.lblKeyName)
-            self.txtKeyName = Gtk.Entry()
-            self.keyNameGroup.add(self.txtKeyName)
-
-            #Adding email elements
-            self.emailGroup = Gtk.Box(10)
-            self.gpgkeyGroup.add(self.emailGroup)
-            self.lblemail = Gtk.Label("Email:")
-            self.emailGroup.add(self.lblemail)
-            self.txtEmail = Gtk.Entry()
-            self.emailGroup.add(self.txtEmail)
-
-            #Adding Password elements
-            self.passwordGroup = Gtk.Box(10)
-            self.gpgkeyGroup.add(self.passwordGroup)
-            self.lblPassword = Gtk.Label("Password:")
-            self.passwordGroup.add(self.lblPassword)
-            self.txtPassword = Gtk.Entry()
-            self.passwordGroup.add(self.txtPassword)
-
-            #Adding Password confermation elements
-            self.passwordCGroup = Gtk.Box(10)
-            self.gpgkeyGroup.add(self.passwordCGroup)
-            self.lblPasswordC = Gtk.Label("Password:")
-            self.passwordCGroup.add(self.lblPasswordC)
-            self.txtPasswordC = Gtk.Entry()
-            self.passwordCGroup.add(self.txtPasswordC)
+            self.createGPGkey = Gtk.BoxCreateGPGKey()
+            self.gpgkeyGroup.add(self.createGPGkey)
+            #self.lblKeyName = Gtk.Label("Real Name:")
+            #self.keyNameGroup.add(self.lblKeyName)
+            #self.txtKeyName = Gtk.Entry()
+            #self.keyNameGroup.add(self.txtKeyName)
+            #
+            ##Adding email elements
+            #self.emailGroup = Gtk.Box(10)
+            #self.gpgkeyGroup.add(self.emailGroup)
+            #self.lblemail = Gtk.Label("Email:")
+            #self.emailGroup.add(self.lblemail)
+            #self.txtEmail = Gtk.Entry()
+            #self.emailGroup.add(self.txtEmail)
+            #
+            ##Adding Password elements
+            #self.passwordGroup = Gtk.Box(10)
+            #self.gpgkeyGroup.add(self.passwordGroup)
+            #self.lblPassword = Gtk.Label("Password:")
+            #self.passwordGroup.add(self.lblPassword)
+            #self.txtPassword = Gtk.Entry()
+            #self.passwordGroup.add(self.txtPassword)
+            #
+            ##Adding Password confermation elements
+            #self.passwordCGroup = Gtk.Box(10)
+            #self.gpgkeyGroup.add(self.passwordCGroup)
+            #self.lblPasswordC = Gtk.Label("Password:")
+            #self.passwordCGroup.add(self.lblPasswordC)
+            #self.txtPasswordC = Gtk.Entry()
+            #self.passwordCGroup.add(self.txtPasswordC)
 
             #self.btnCreateGPGhome = Gtk.Button("Create GPG Key")
             #self.btnCreateGPGhome.connect("clicked", self.btnCreateGPGkey_Clicked)
@@ -113,7 +114,7 @@ class DialogCreatePassStore(Gtk.Dialog):
             model = combo.get_model()
             row_id, name = model[tree_iter][:2]
             print("Selected: ID=%s, name=%s" % (row_id, name))
-            self.selected_key = row_id
+            self.selected_key = name
         else:
             entry = combo.get_child()
             print("Entered: %s" % entry.get_text())

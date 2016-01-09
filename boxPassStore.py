@@ -9,11 +9,12 @@ from popfolder import PopFolder
 class BoxPassStore(Gtk.VBox):
 
     #Constructor
-    def __init__(self, config):
+    def __init__(self, parent, config):
         Gtk.VBox.__init__(self, 10)
         #Create PyPass object
-        self.gpass_config = config
-        self.pypas = PyPass(self.gpass_config)
+        self.config = config
+        self.parent = parent
+        self.pypas = self.parent.pypas
         self.passDepth = []
         self.openAccount = None
         self.passBtnArray = {}

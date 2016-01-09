@@ -7,14 +7,20 @@ class PyPass:
     def __init__(self, config):
         self.config = config
         self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
+        self.keys = []
+        if self.config.ispassword_store:
+            with open(self.config.password_store + '/.gpg-id', 'r') as f:
+                self.keys = f.readlines()
+        print(self.keys)
         #self.gpg.set_default_key(self.config.gpgkey)
 
-    def create(self, gpgkey):
-        os.mkdir(self.config.get_password_store())
+    def create(self, gpgkey, filepath):
+        os.mkdir(filepath)
+        self.config.set_password_store(filepath)
         self.add_gpg_key(gpgkey, self.config.get_password_store())
         print('create')
 
-    def add_gpg_key(gpgkey, folder):
+    def add_gpg_key(self, gpgkey, folder):
         filepath = folder + '/.gpg-id'
         content = [];
         if os.path.isdir(filepath):
