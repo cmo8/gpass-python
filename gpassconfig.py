@@ -1,5 +1,4 @@
 import os
-from git import Repo
 
 class GPassConfig:
 
@@ -20,9 +19,9 @@ class GPassConfig:
         self.ispassword_store = False
         self.password_store = os.environ['HOME'] + '/.password-store'
         #self.password_store = ''
-        self.isgpgkey = False
-        self.gpgkey = ''
-        self.git = False
+        #self.isgpgkey = False
+        #self.gpgkey = ''
+        #self.git = False
 
     def load_config(self):
         if os.path.isfile(os.environ['HOME'] + '/.gpass.config'):
@@ -30,7 +29,7 @@ class GPassConfig:
             self.isgpgbinary = self.check_gpgbinary(self.gpgbinary)
             self.isgpghome = self.check_gpghome(self.gpghome)
             self.ispassword_store = self.check_password_store(self.password_store)
-            self.isgpgkey = self.check_gpgkey(self.gpgkey)
+            #self.isgpgkey = self.check_gpgkey(self.gpgkey)
             if self.isgpgbinary and self.isgpghome and self.ispassword_store:# and self.isgpgkey:
                 return True
         else:
@@ -64,9 +63,9 @@ class GPassConfig:
                         else:
                             self.password_store = conf[1][:-1]
 
-                    elif conf[0] == 'gpgkey':
-                        print("gpgKey: " + conf[1][:-1])
-                        self.gpgkey = conf[1][:-1]
+                    #elif conf[0] == 'gpgkey':
+                    #    print("gpgKey: " + conf[1][:-1])
+                    #    self.gpgkey = conf[1][:-1]
 
     #Test Function to display the current config
     def config_test(self):
@@ -76,7 +75,7 @@ class GPassConfig:
         print("Default GPG Binary       : ", self.gpgbinary, self.isgpgbinary)
         print("Default GPG Home         : ", self.gpghome, self.isgpghome)
         print("Default Password Store   : ", self.password_store, self.ispassword_store)
-        print("Default GPG key          : ", self.gpgkey, self.isgpgkey)
+        #print("Default GPG key          : ", self.gpgkey, self.isgpgkey)
 
     def set_password_store(self, password_store_path):
         if self.check_password_store(password_store_path):
@@ -99,12 +98,12 @@ class GPassConfig:
             return self.isgpghome
         return False
 
-    def set_gpgkey(self, gpgkey):
-        if self.check_gpgkey(gpgkey):
-            self.gpgkey = gpgkey
-            self.isgpgkey = True
-            return self.isgpgkey
-        return False
+    #def set_gpgkey(self, gpgkey):
+    #    if self.check_gpgkey(gpgkey):
+    #        self.gpgkey = gpgkey
+    #        self.isgpgkey = True
+    #        return self.isgpgkey
+    #    return False
 
     def get_password_store(self):
         return self.password_store
@@ -115,8 +114,8 @@ class GPassConfig:
     def get_gpghome(self):
         return self.gpghome
 
-    def get_gpgkey(self):
-        return self.gpgkey
+    #def get_gpgkey(self):
+    #    return self.gpgkey
 
     #Write the current config to the file
     def save_config(self):
@@ -142,9 +141,9 @@ class GPassConfig:
             f.write('#\n')
             f.write('#GPG home\n')
             f.write('gpghome = ' + self.gpghome + '\n')
-            f.write('#\n')
-            f.write('#Default GPG key\n')
-            f.write('gpgkey = ' + self.gpgkey + '\n')
+            #f.write('#\n')
+            #f.write('#Default GPG key\n')
+            #f.write('gpgkey = ' + self.gpgkey + '\n')
             f.write('#\n')
             f.write('#Pass Password Store home\n')
             f.write('password_store = ' + self.password_store + '\n')
@@ -170,11 +169,11 @@ class GPassConfig:
         if os.path.isdir(password_store):
             return True
         return False
-    # Checks if the GPG key exists
-    #TODO: check gpg key exists
-    def check_gpgkey(self, gpgkey = ""):
-        if gpgkey == "":
-            gpgkey = self.gpgkey
-        if os.path.isfile(gpgkey):
-            return True
-        return False
+#    # Checks if the GPG key exists
+#    #TODO: check gpg key exists
+#    def check_gpgkey(self, gpgkey = ""):
+#        if gpgkey == "":
+#            gpgkey = self.gpgkey
+#        if os.path.isfile(gpgkey):
+#            return True
+#        return False

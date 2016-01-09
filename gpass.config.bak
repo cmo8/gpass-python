@@ -23,8 +23,5 @@ gpgbinary = /usr/bin/gpg2
 #GPG home
 gpghome = /home/cmo/.gnupg
 #
-#Default GPG key
-gpgkey = cmo.uwp.2010@gmail.com
-#
 #Pass Password Store home
 password_store = /home/cmo/newsp

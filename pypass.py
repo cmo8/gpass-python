@@ -5,10 +5,31 @@ class PyPass:
 
     #Creates a PyPass object
     def __init__(self, config):
-        self.gpass_config = config
-        self.gpg = GPGkey(self.gpass_config.gpgbinary, self.gpass_config.gpghome)
-        self.gpg.set_default_key(self.gpass_config.gpgkey)
+        self.config = config
+        self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
+        #self.gpg.set_default_key(self.config.gpgkey)
 
+    def create(self, gpgkey):
+        os.mkdir(self.config.get_password_store())
+        self.add_gpg_key(gpgkey, self.config.get_password_store())
+        print('create')
+
+    def add_gpg_key(gpgkey, folder):
+        filepath = folder + '/.gpg-id'
+        content = [];
+        if os.path.isdir(filepath):
+            with open(filepath, 'r') as f:
+                content = f.readlines()
+        print(content)
+        if not any(gpgkey in s for s in content):
+            content[] = gpgkey
+        with open(filepath, 'w') as f:
+            con_str = ""
+            for key in content:
+                con_str += key
+                con_str += '\n'
+            f.write(con_str)
+        print('add_gpg_key')
     #Returns an unecrypted string of the selected file
     def account(self, account):
         out = self.gpg.decrypt_from_file(self.build_path(account))
@@ -125,7 +146,7 @@ class PyPass:
 
     #Concatinates the root password store path with the child path
     def build_path(self, child_path):
-        tmp = self.gpass_config.password_store
+        tmp = self.config.password_store
         if not child_path == '':
             tmp +=  '/' + child_path
         #print(tmp)
