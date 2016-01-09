@@ -8,16 +8,13 @@ class PyPass:
         self.config = config
         self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
         self.keys = []
-        if self.config.ispassword_store:
-            with open(self.config.password_store + '/.gpg-id', 'r') as f:
-                self.keys = f.readlines()
-        print(self.keys)
-        #self.gpg.set_default_key(self.config.gpgkey)
+        check_gpgkeys(self.config.password_store)
 
     def create(self, gpgkey, filepath):
         os.mkdir(filepath)
         self.config.set_password_store(filepath)
         self.add_gpg_key(gpgkey, self.config.get_password_store())
+		check_gpgkeys(self.config.password_store)
         print('create')
 
     def add_gpg_key(self, gpgkey, folder):
@@ -157,3 +154,9 @@ class PyPass:
             tmp +=  '/' + child_path
         #print(tmp)
         return tmp
+
+	def check_gpgkeys(self, folderpath):
+		if self.config.ispassword_store:
+            with open(folderpath + '/.gpg-id', 'r') as f:
+                self.keys = f.readlines()
+        print(self.keys)

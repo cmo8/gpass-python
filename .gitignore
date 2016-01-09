@@ -1,3 +1,9 @@
 *.*~
 *.pyc
 *.nupkg
+.anjuta/*
+.anjuta_sym_db.db
+.ropeproject/*
+Makefile~
+gpass.anjuta
+

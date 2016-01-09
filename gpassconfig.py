@@ -38,7 +38,7 @@ class GPassConfig:
 
     #Reads in the config file and stores the variables.
     def get_config(self):
-        with open('gpass.config', 'r') as f:
+        with open(os.environ['HOME'] + '/.gpass.config', 'r') as f:
             for line in f:
                 if not line.startswith('#'):
                     conf = line.split(' = ')
