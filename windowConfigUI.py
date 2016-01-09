@@ -1,11 +1,14 @@
 from gi.repository import Gtk, Gdk
-from pypass import PyPass
+from gpgkey import GPGkey
+from boxCreateGPGKey import BoxCreateGPGKey
 
 class WindowConfigUI(Gtk.Window):
 
     #Constructor
     def __init__(self, config):
         Gtk.Window.__init__(self)
+        self.config = config
+        self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
         self.set_default_size(700, 350);
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_title("GPass Settings")
@@ -16,21 +19,32 @@ class WindowConfigUI(Gtk.Window):
         self.btnCreateGPGKey.connect("clicked", self.btnCreateGPGKey_clicked)
         self.vbox.pack_start(self.btnCreateGPGKey, True, True, 0)
 
-    def btnCreateGPGKey_clicked(self):
-        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent, self.config)
-        response = dialogClonePassStoreRepo.run()
+    def btnCreateGPGKey_clicked(self, button):
+        dialogCreateGPGKey = Gtk.Dialog("Create GPG Key", self, 0,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
+        dialogCreateGPGKey.set_default_size(250, 300)
+        vbox  = dialogCreateGPGKey.get_content_area()
+        boxCreateGPGKey = BoxCreateGPGKey()
+        vbox.add(boxCreateGPGKey)
+        response = dialogCreateGPGKey.run()
 
         if response == Gtk.ResponseType.OK:
-            location = dialogClonePassStoreRepo.txtLocation.get_text()
-            repo = dialogClonePassStoreRepo.txtRepo.get_text()
-            print("Location:", location)
-            print("Repo:", repo)
+            real_name = boxCreateGPGKey.get_real_name()
+            email = boxCreateGPGKey.get_email()
+            password = boxCreateGPGKey.get_password()
+            passwordc = boxCreateGPGKey.get_confirmation()
+            if real_name != "" and email != "" and password != "" and passwordc != "" and password == passwordc:
+                print("Real Name:", real_name)
+                print("Email:", email)
+                self.gpg.generate_key(real_name, email, password)
             print("OK button clicked")
         elif response == Gtk.ResponseType.CANCEL:
             print("Cancel button clicked")
         else:
             print("Dialog closed")
-        dialogClonePassStoreRepo.destroy()
+        dialogCreateGPGKey.destroy()
 
     #Show the Window
     def show(self):

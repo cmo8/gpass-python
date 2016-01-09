@@ -3,7 +3,7 @@ from gi.repository import Gtk
 class BoxCreateGPGKey(Gtk.VBox):
 
     #Constructor
-    def __init__(self, config):
+    def __init__(self):
         Gtk.VBox.__init__(self)
         #Key name folder
         self.keyNameGroup = Gtk.Box(10)
@@ -36,6 +36,7 @@ class BoxCreateGPGKey(Gtk.VBox):
         self.passwordCGroup.add(self.lblPasswordC)
         self.txtPasswordC = Gtk.Entry()
         self.passwordCGroup.add(self.txtPasswordC)
+        self.show_all()
 
     def get_real_name(self):
         return self.txtKeyName.get_text()
