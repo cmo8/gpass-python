@@ -22,7 +22,7 @@ class PyPass:
                 content = f.readlines()
         print(content)
         if not any(gpgkey in s for s in content):
-            content[] = gpgkey
+            content.append(gpgkey)
         with open(filepath, 'w') as f:
             con_str = ""
             for key in content:
