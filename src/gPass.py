@@ -15,7 +15,7 @@ class PyPass:
         self.config.set_password_store(filepath)
         self.add_gpg_key(gpgkey, self.config.get_password_store())
 		check_gpgkeys(self.config.password_store)
-        print('create')
+        #print('create')
 
     def add_gpg_key(self, gpgkey, folder):
         filepath = folder + '/.gpg-id'
@@ -23,7 +23,7 @@ class PyPass:
         if os.path.isdir(filepath):
             with open(filepath, 'r') as f:
                 content = f.readlines()
-        print(content)
+        #print(content)
         if not any(gpgkey in s for s in content):
             content.append(gpgkey)
         with open(filepath, 'w') as f:
@@ -32,7 +32,7 @@ class PyPass:
                 con_str += key
                 con_str += '\n'
             f.write(con_str)
-        print('add_gpg_key')
+        #print('add_gpg_key')
     #Returns an unecrypted string of the selected file
     def account(self, account):
         out = self.gpg.decrypt_from_file(self.build_path(account))
@@ -42,7 +42,7 @@ class PyPass:
     def insert(self, account, message):
         if not message.endswith('\n'):
             message += '\n'
-        print("Entering Insert")
+        
         out = self.gpg.encrypt_to_file(message, self.build_path(account))
 
     #Deletes the selected account

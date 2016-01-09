@@ -8,7 +8,7 @@ LOCALE=/usr/share
 MAIN=main.py
 
 run:
-	python3 $(MAIN)
+	python3 src/$(MAIN)
 
 testh:
 	mkdir -p $(HOME)/usr

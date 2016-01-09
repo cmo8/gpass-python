@@ -4,7 +4,7 @@ from gpassconfig import GPassConfig
 from windowMainUI import WindowMainUI
 from windowConfigUI import WindowConfigUI
 
-class AppGPass(Gtk.Application):
+class GPassApplication(Gtk.Application):
 
     def __init__(self):
         Gtk.Application.__init__(self, application_id="org.cmo.gpass", flags=Gio.ApplicationFlags.FLAGS_NONE)
