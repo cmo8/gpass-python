@@ -4,7 +4,7 @@ class BoxCreateGPGKey(Gtk.VBox):
 
     #Constructor
     def __init__(self):
-        Gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self, 10)
         #Key name folder
         self.keyNameGroup = Gtk.Box(10)
         self.add(self.keyNameGroup)

@@ -1,20 +1,20 @@
 from gi.repository import Gtk, Gdk
-from pypass import PyPass
+#from gPass import GPass
 #from createAccountUI import CreateAccountUI
-from popcreateaccount import popCreateAccount
-from popdelete import PopDelete
-from popadditem import PopAddItem
-from popfolder import PopFolder
+from uiPopcreateaccount import popCreateAccount
+from uiPopdelete import PopDelete
+from uiPopadditem import PopAddItem
+from uiPopfolder import PopFolder
 
 class BoxPassStore(Gtk.VBox):
 
     #Constructor
-    def __init__(self, parent, config):
+    def __init__(self, parent):
         Gtk.VBox.__init__(self, 10)
         #Create PyPass object
-        self.config = config
         self.parent = parent
-        self.pypas = self.parent.pypas
+        self.config = self.parent.config
+        self.gpass = self.parent.gpass
         self.passDepth = []
         self.openAccount = None
         self.passBtnArray = {}
@@ -23,7 +23,7 @@ class BoxPassStore(Gtk.VBox):
 
         #Building UI
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("boxPassStore.glade")
+        self.builder.add_from_file("src/uiBoxPassStore.glade")
         self.builder.connect_signals(self)
         #Application Window
         self.passStorePanel = self.builder.get_object("passStorePanel")
@@ -55,13 +55,13 @@ class BoxPassStore(Gtk.VBox):
         #Clipboard
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         #Add pass database buttons
-        self.pack_buttons(self.pypas.pass_array())
+        self.pack_buttons(self.gpass.pass_array())
 
     #New Button Click Handler
     def btnNew_clicked(self, button):
         self.clear_status()
         self.clear_account_info()
-        popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path(), self.pypas)
+        popcreateaccount = popCreateAccount(self, self.btnNew, self.get_pass_path())
         popcreateaccount.show()
         #print('btnNew_clicked')
 
@@ -70,7 +70,7 @@ class BoxPassStore(Gtk.VBox):
         self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
-        popadditem = PopAddItem(self, self.btnAddItem, self.pypas, self.txtFile.get_text(start, end, True))
+        popadditem = PopAddItem(self, self.btnAddItem, self.txtFile.get_text(start, end, True))
         popadditem.show()
         #print("btnAddItem_clicked")
 
@@ -83,7 +83,7 @@ class BoxPassStore(Gtk.VBox):
     #Delete Button Click Handler
     def btnDelete_clicked(self, button):
         self.clear_status()
-        popDelete =  PopDelete(self, self.btnDelete, self.pypas)
+        popDelete =  PopDelete(self, self.btnDelete)
         popDelete.show()
         #print('btnDelete_clicked')
 
@@ -92,7 +92,7 @@ class BoxPassStore(Gtk.VBox):
         self.clear_status()
         start = self.txtFile.get_start_iter()
         end = self.txtFile.get_end_iter()
-        self.pypas.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
+        self.gpass.insert(self.get_pass_path(), self.txtFile.get_text(start, end, True))
         self.clear_account_info(False)
         self.displayAccount(self.get_pass_path())
         #print('btnUpdate_clicked')
@@ -111,7 +111,7 @@ class BoxPassStore(Gtk.VBox):
             self.passDepth.append(button.get_label())
             self.repack_buttons()
         elif event.button == 3:
-            foldermenu = PopFolder(self, self.listbox, self.pypas)
+            foldermenu = PopFolder(self, self.listbox)
             foldermenu.show()
 
     #Update Button Click Handler
@@ -128,12 +128,12 @@ class BoxPassStore(Gtk.VBox):
     #Handler for the search entity
     def txtSearch_search_changed(self, txt):
         self.new_status("Search: " + self.txtSearch.get_text())
-        tmp = self.pypas.find(self.txtSearch.get_text())
+        tmp = self.gpass.find(self.txtSearch.get_text())
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
         #Get GPG file content
-        account_info = self.pypas.account(accountToDisplay)
+        account_info = self.gpass.account(accountToDisplay)
         #display contents in text editor
         self.txtFile.set_text(str(account_info))
         #Split the lines appert
@@ -254,9 +254,9 @@ class BoxPassStore(Gtk.VBox):
         self.passBtnArray = {}
         if len(self.passDepth) > 0:
             path = self.get_pass_path()
-            self.pack_buttons(self.pypas.pass_array(path))
+            self.pack_buttons(self.gpass.pass_array(path))
         else:
-            self.pack_buttons(self.pypas.pass_array())
+            self.pack_buttons(self.gpass.pass_array())
 
     #get the current path
     def get_pass_path(self):

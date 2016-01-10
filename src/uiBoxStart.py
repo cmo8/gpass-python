@@ -1,17 +1,17 @@
 import os
+from git import Repo
 from gi.repository import Gtk
-from gpgkey import GPGkey
-from dialogCreatePassStore import DialogCreatePassStore
-
-from dialogClonePassStoreRepo import DialogClonePassStoreRepo
+from gPassGPG import GPassGPG
+from uiDialogCreatePassStore import DialogCreatePassStore
+from uiDialogClonePassStoreRepo import DialogClonePassStoreRepo
 
 class BoxStart(Gtk.VButtonBox):
 
-    def __init__(self, parent, config):
+    def __init__(self, parent):
         Gtk.VButtonBox.__init__(self)
         self.parent = parent
-        self.config = config
-        self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
+        self.config = self.parent.config
+        self.gpg = GPassGPG(self.config.gpgbinary, self.config.gpghome)
 
         #self.set_spacing(20)
         self.set_layout(Gtk.ButtonBoxStyle.CENTER)
@@ -32,10 +32,11 @@ class BoxStart(Gtk.VButtonBox):
         self.pack_start(self.btnGitClonePassStore, True, True, 0)
 
     def btnCreatePassStore_clicked(self, button):
-        keys = self.gpg.list_keys()
+        print('btnCreatePassStore_clicked')
+        keys = self.gpg.list_keys(True)
         self.gpg.list_public_keys()
-        dialogCreatePassStore = DialogCreatePassStore(self.parent, self.config, keys)
-        
+        dialogCreatePassStore = DialogCreatePassStore(self.parent, keys)
+        print('btnCreatePassStore_clicked')
         loop_continue = False
         while not loop_continue:
             response = dialogCreatePassStore.run()
@@ -58,7 +59,9 @@ class BoxStart(Gtk.VButtonBox):
                 else:
                     real_name = dialogCreatePassStore.selected_key
                     loop_continue = True
-                self.parent.pypas.create(real_name, dialogCreatePassStore.txtLocation.get_text())
+                self.parent.gpass.create(real_name, dialogCreatePassStore.txtLocation.get_text())
+                self.config.save_config()
+                self.parent.setPassStoreView()
                 print("OK button clicked")
             elif response == Gtk.ResponseType.CANCEL:
                 loop_continue = True
@@ -67,23 +70,40 @@ class BoxStart(Gtk.VButtonBox):
                 loop_continue = True
                 print("Dialog closed")
         dialogCreatePassStore.destroy()
-        self.config.save_config()
-        self.parent.setPassStoreView()
-        print('btnCreatePassStore_clicked')
 
     def btnSelectPassStore_clicked(self, button):
+        #Create a folder
+        filechooserdialog = Gtk.FileChooserDialog(self.parent, title="Open Password Store", buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        filechooserdialog.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
+        email_filter = Gtk.FileFilter()
+        email_filter.set_name("Folder")
+        email_filter.add_pattern("*")  # whats the pattern for a folder
+        filechooserdialog.add_filter(email_filter)
+        response = filechooserdialog.run()
+        if response == Gtk.ResponseType.OK:
+            directory = filechooserdialog.get_filename()
+            print("File selected: %s" % directory)
+            #Set config object
+            self.config.set_password_store(directory)
+            self.config.save_config()
+            self.parent.setPassStoreView()
+        filechooserdialog.destroy()
         print('btnSelectPassStore_clicked')
 
     def btnGitClonePassStore_clicked(self, button):
-        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent, self.config)
+        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent)
         response = dialogClonePassStoreRepo.run()
 
         if response == Gtk.ResponseType.OK:
-            location = dialogClonePassStoreRepo.txtLocation.get_text()
-            repo = dialogClonePassStoreRepo.txtRepo.get_text()
-            print("Location:", location)
-            print("Repo:", repo)
+            repo_dir = dialogClonePassStoreRepo.txtLocation.get_text()
+            git_url = dialogClonePassStoreRepo.txtRepo.get_text()
+            print("Location:", repo_dir)
+            print("Repo:", git_url)
             print("OK button clicked")
+            Repo.clone_from(git_url, repo_dir)
+            self.config.set_password_store(repo_dir)
+            self.config.save_config()
+            self.parent.setPassStoreView()
         elif response == Gtk.ResponseType.CANCEL:
             print("Cancel button clicked")
         else:

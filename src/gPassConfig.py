@@ -119,7 +119,7 @@ class GPassConfig:
 
     #Write the current config to the file
     def save_config(self):
-        with open('gpass.config', 'w') as f:
+        with open(os.environ['HOME'] + '/.gpass.config', 'w') as f:
             f.write('###############################################################################\n')
             f.write('#                                Gpass Config                                 #\n')
             f.write('#                                                                             #\n')

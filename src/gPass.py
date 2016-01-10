@@ -1,20 +1,19 @@
 import os
-from gpgkey import GPGkey
+from gPassGPG import GPassGPG
 
-class PyPass:
+class GPass:
 
     #Creates a PyPass object
     def __init__(self, config):
         self.config = config
-        self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
-        self.keys = []
-        check_gpgkeys(self.config.password_store)
+        self.gpg = GPassGPG(self.config.gpgbinary, self.config.gpghome)
+        #self.keys = self.check_gpgkeys(self.config.password_store)
 
     def create(self, gpgkey, filepath):
         os.mkdir(filepath)
         self.config.set_password_store(filepath)
         self.add_gpg_key(gpgkey, self.config.get_password_store())
-		check_gpgkeys(self.config.password_store)
+        #self.keys = self.check_gpgkeys(self.config.password_store)
         #print('create')
 
     def add_gpg_key(self, gpgkey, folder):
@@ -42,8 +41,8 @@ class PyPass:
     def insert(self, account, message):
         if not message.endswith('\n'):
             message += '\n'
-        
-        out = self.gpg.encrypt_to_file(message, self.build_path(account))
+        keys = self.check_gpgkeys(account)
+        out = self.gpg.encrypt_to_file(message, self.build_path(account), keys)
 
     #Deletes the selected account
     def delete(self, account):
@@ -155,8 +154,35 @@ class PyPass:
         #print(tmp)
         return tmp
 
-	def check_gpgkeys(self, folderpath):
-		if self.config.ispassword_store:
-            with open(folderpath + '/.gpg-id', 'r') as f:
-                self.keys = f.readlines()
-        print(self.keys)
+    def check_gpgkeys(self, folderpath):
+        tmp = []
+        keys = []
+        gpg_id = folderpath + '/.gpg-id'
+        print("GPG ID: " + gpg_id)
+        if os.path.isfile(gpg_id):
+            with open(gpg_id, 'r') as f:
+                tmp = f.readlines()
+        else:
+            with open(self.config.password_store + '/.gpg-id', 'r') as f:
+                tmp = f.readlines()
+        for tp in tmp:
+            keys.append(tp[:-1])
+        print("GPG Keys:")
+        print(keys)
+        return keys
+
+    #deprecated
+    #def find_gpgkeys(self, child_path):
+    #    gpgkeys = self.check_gpgkeys(self.config.password_store)
+    #    print('Find_gpgkeys:' + child_path)
+    #    print(self.keys)
+    #    directorys = child_path.split('/')
+    #    check_dir = self.config.password_store
+    #    for d in directorys:
+    #        if d.endswith(".gpg"):
+    #            print("GPG File: " + d)
+    #        else:
+    #            check_dir += '/' + d
+    #            gpgkeys += self.check_gpgkeys(check_dir)
+    #            print("Dir: " + check_dir)
+    #    return gpgkeys

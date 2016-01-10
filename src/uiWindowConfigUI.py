@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gdk
-from gpgkey import GPGkey
-from boxCreateGPGKey import BoxCreateGPGKey
+from gPassGPG import GPassGPG
+from uiBoxCreateGPGKey import BoxCreateGPGKey
 
 class WindowConfigUI(Gtk.Window):
 
@@ -8,7 +8,7 @@ class WindowConfigUI(Gtk.Window):
     def __init__(self, config):
         Gtk.Window.__init__(self)
         self.config = config
-        self.gpg = GPGkey(self.config.gpgbinary, self.config.gpghome)
+        self.gpg = GPassGPG(self.config.gpgbinary, self.config.gpghome)
         self.set_default_size(700, 350);
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_title("GPass Settings")

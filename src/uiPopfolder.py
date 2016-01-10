@@ -1,11 +1,11 @@
 from gi.repository import Gtk
-from pypass import PyPass
+#from gpasss import PyPass
 
 class PopFolder:
     #Constructor
-    def __init__(self, parent, btn, pypas):
+    def __init__(self, parent, btn):
         self.parent = parent
-        self.pypas = pypas
+        self.gpass = self.parent.gpass
         self.btn = btn
         self.folder = Gtk.Entry()
         self.popFolder = self.create_folder_popover_menu()
@@ -13,7 +13,7 @@ class PopFolder:
     #Button Create Folder click event
     def create_folder_clicked(self, button):
         if not self.folder.get_text() == "":
-            self.pypas.createFolder(self.folder.get_text(), self.parent.get_pass_path())
+            self.gpass.createFolder(self.folder.get_text(), self.parent.get_pass_path())
             self.parent.repack_buttons()
             self.popFolder.hide()
         else:

@@ -5,18 +5,19 @@ import gnupg
 from subprocess import Popen, PIPE
 from pprint import pprint
 
-class GPGkey:
+class GPassGPG:
     #Constructor
     def __init__(self, gpgbinary, gpghome):
         self.gpg = gnupg.GPG(gpgbinary, gpghome)
 
+    #deprecated
     #Set the Default Key
-    def set_default_key(self, key):
-        self.key = key
+    #def set_default_key(self, keys):
+    #    self.keys = keys
 
-    def list_keys(self):
+    def list_keys(self, private_keys = False):
         rtn = {}
-        pub_key = self.gpg.list_keys()
+        pub_key = self.gpg.list_keys(private_keys)
         for key in pub_key:
             #print("KeyID:", type(key['keyid']))
             rtn[key['keyid']] = key['uids'][0]
@@ -35,11 +36,8 @@ class GPGkey:
         pprint(pri_key)
 
     #Uses the default public key to encrypt the message unless otherwise stated
-    def encrypt(self, message_in, key=None):
-        eKey = self.key
-        if key != None:
-            eKey = key
-        encrypted_str = self.gpg.encrypt(message_in, eKey)
+    def encrypt(self, message_in, keys):
+        encrypted_str = self.gpg.encrypt(message_in, keys)
         return encrypted_str
 
     #Decrypts the encrypted message with the private key
@@ -48,8 +46,8 @@ class GPGkey:
         return plain_str
 
     #Encrypts a string and writes it to a specified file
-    def encrypt_to_file(self, message_in, filepath_out, key=None):
-        encrypt_str = self.encrypt(message_in, key)
+    def encrypt_to_file(self, message_in, filepath_out, keys):
+        encrypt_str = self.encrypt(message_in, keys)
         with open(filepath_out, 'w') as f:
             f.write(str(encrypt_str))
 

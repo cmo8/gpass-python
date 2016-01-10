@@ -1,8 +1,8 @@
 import sys
 from gi.repository import Gio, Gtk
-from gpassconfig import GPassConfig
-from windowMainUI import WindowMainUI
-from windowConfigUI import WindowConfigUI
+from gPassConfig import GPassConfig
+from uiWindowMainUI import WindowMainUI
+from uiWindowConfigUI import WindowConfigUI
 
 class GPassApplication(Gtk.Application):
 
@@ -10,9 +10,9 @@ class GPassApplication(Gtk.Application):
         Gtk.Application.__init__(self, application_id="org.cmo.gpass", flags=Gio.ApplicationFlags.FLAGS_NONE)
         #Gtk.Application.new("org.cmo.gpass", 0)
         #reads in the config file
-        self.passConfig = GPassConfig()
-        self.window = WindowMainUI(self.passConfig)
-        self.windowConfigUI = WindowConfigUI(self.passConfig)
+        self.config = GPassConfig()
+        self.window = WindowMainUI(self.config)
+        self.windowConfigUI = WindowConfigUI(self.config)
         self.connect('activate', self.on_app_activate)
         self.connect('startup', self.on_app_startup)
         self.connect('shutdown', self.on_app_shutdown)
@@ -83,9 +83,9 @@ class GPassApplication(Gtk.Application):
         if response == Gtk.ResponseType.OK:
             print("File selected: %s" % filechooserdialog.get_filename())
             #Set config object
-            self.passConfig.set_password_store(filechooserdialog.get_filename())
-            self.passConfig.config_test()
-            self.passConfig.save_config()
+            self.config.set_password_store(filechooserdialog.get_filename())
+            self.config.config_test()
+            self.config.save_config()
             self.window.repack_buttons()
         filechooserdialog.destroy()
 
