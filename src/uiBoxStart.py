@@ -59,7 +59,7 @@ class BoxStart(Gtk.VButtonBox):
                 else:
                     real_name = dialogCreatePassStore.selected_key
                     loop_continue = True
-                self.parent.gpass.create(real_name, dialogCreatePassStore.txtLocation.get_text())
+                self.parent.gpass.create(real_name, dialogCreatePassStore.txtLocation.get_text(), dialogCreatePassStore.checkBoxGit.get_active())
                 self.config.save_config()
                 self.parent.setPassStoreView()
                 print("OK button clicked")

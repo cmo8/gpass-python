@@ -4,10 +4,18 @@
 - 
 
 ##High Priority
-- Add a Remove selected items
+- Password Directories
+	- add GPG Users
+	- remove GPG Users
+- Account File manipulation
+	- Add a Remove selected items
 - Add Git suport
-	- Need it for dialogClonePassStoreRepo.py
-- Add Create password store
+	- DONE: Need it for dialogClonePassStoreRepo.py
+	- Create Git Repo
+	- Add Remote Repo
+	- Commit changes on change
+
+- DONE: Add Create password store
 - No config first startup
         - Select/create GPG key
         - create password store folder
@@ -19,7 +27,7 @@
 - Show what account is selected
 
 ##Low Priority
-- Add multiple GPG key suport
+- DONE: Add multiple GPG key suport
 - Change the account button method to Gkt.Expander
 - Add Headerbar
 

@@ -1,3 +1,5 @@
+import random
+import string
 from gi.repository import Gtk
 #from gpasss import PyPass
 
@@ -88,6 +90,8 @@ class popCreateAccount:
     #Show And Hide Password Button Click Handler
     def btnGeneratePassword_clicked(self, button):
         gen = "R@nd0m"
+        char_set = self.parent.config.get_active_char_group()
+        gen = ''.join(random.sample(char_set*6, self.parent.config.get_pass_length()))
         self.txtPassword.set_text(gen)
         self.txtConfirm.set_text(gen)
         #print('btnGeneratePassword_clicked')

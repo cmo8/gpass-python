@@ -116,6 +116,7 @@
           <object class="GtkNotebook" id="notebook1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <signal name="switch-page" handler="pager_page_change" swapped="no"/>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow2">
                 <property name="visible">True</property>
@@ -248,14 +249,16 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkListBox" id="listbox1">
+                  <object class="GtkTreeView" id="tvAdvalible">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection3"/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">10</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -325,14 +328,16 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkListBox" id="listbox2">
+                  <object class="GtkTreeView" id="tvLive">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection4"/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">9</property>
                     <property name="position">2</property>
                   </packing>
                 </child>

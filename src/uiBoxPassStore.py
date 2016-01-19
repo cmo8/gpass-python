@@ -47,6 +47,23 @@ class BoxPassStore(Gtk.VBox):
         self.btnUpdate.set_sensitive(False)
         self.btnAddItem.set_sensitive(False)
         #self.btnMene = self.builder.get_object("btnMene")
+        self.tvAdvalible = self.builder.get_object("tvAdvalible")
+        self.tvLive = self.builder.get_object("tvLive")
+        self.lsLive = Gtk.ListStore(str)
+        self.lsAdvalible = Gtk.ListStore(str)
+        self.tvAdvalible.set_model(self.lsAdvalible)
+        self.tvLive.set_model(self.lsLive)
+        treeviewcolumn = Gtk.TreeViewColumn("Advalible GPG Keys")
+        self.tvAdvalible.append_column(treeviewcolumn)
+        cellrenderertext = Gtk.CellRendererText()
+        treeviewcolumn.pack_start(cellrenderertext, True)
+        treeviewcolumn.add_attribute(cellrenderertext, "text", 0)
+
+        treeviewcolumn = Gtk.TreeViewColumn("Live GPG Keys")
+        self.tvLive.append_column(treeviewcolumn)
+        cellrenderertext = Gtk.CellRendererText()
+        treeviewcolumn.pack_start(cellrenderertext, True)
+        treeviewcolumn.add_attribute(cellrenderertext, "text", 0)
         #Text Buffers
         self.txtSearch = self.builder.get_object("txtSearch")
         self.txtPassword = self.builder.get_object("buffertxtPassword")
@@ -129,6 +146,27 @@ class BoxPassStore(Gtk.VBox):
     def txtSearch_search_changed(self, txt):
         self.new_status("Search: " + self.txtSearch.get_text())
         tmp = self.gpass.find(self.txtSearch.get_text())
+
+
+#################################################################################################################
+    def load_gpg_permissions(self):
+        self.lsLive.clear()
+        self.lsAdvalible.clear()
+        live = self.gpass.gpg_id(self.get_pass_path())
+        advalible = self.gpass.gpg.list_keys()
+        for l in live:
+            self.lsLive.append([l])
+        for a in advalible:
+            print("A:" + a + ":")
+            if a not in live:
+                self.lsAdvalible.append([a])
+        
+
+    def pager_page_change(self, notebook, page, page_num):
+        if page_num == 2:
+            pass
+            #self.show_all()
+
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
@@ -214,6 +252,7 @@ class BoxPassStore(Gtk.VBox):
             self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
             self.passBtnArray[x].show()
         self.breadcrumbs()
+        self.load_gpg_permissions()
 
     #Breadcrumbs Button Click
     def breadcrumbs_clicked(self, button):
@@ -239,6 +278,8 @@ class BoxPassStore(Gtk.VBox):
             self.breadcrumbsBtnArray["root"].set_relief(Gtk.ReliefStyle.NONE)
             self.breadcrumbsBtnArray["root"].connect("clicked", self.breadcrumbs_clicked)
             self.locationbreadcrumbs.add(self.breadcrumbsBtnArray["root"])
+            print("Breadcrumbs: ")
+            print(self.passDepth)
             for x in self.passDepth:
                 self.breadcrumbsBtnArray[x] = Gtk.Button(x)
                 self.breadcrumbsBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
