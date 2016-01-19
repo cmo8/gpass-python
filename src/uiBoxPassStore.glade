@@ -116,7 +116,6 @@
           <object class="GtkNotebook" id="notebook1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="switch-page" handler="pager_page_change" swapped="no"/>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow2">
                 <property name="visible">True</property>
@@ -274,6 +273,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="gpg_add_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -282,11 +282,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="btnGpgRemov">
+                      <object class="GtkButton" id="btnGpgRemove">
                         <property name="label" translatable="yes">&lt;</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="gpg_remove_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -300,6 +301,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="gpg_add_all_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -313,6 +315,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="gpg_remove_all_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>

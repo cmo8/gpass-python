@@ -157,16 +157,27 @@ class BoxPassStore(Gtk.VBox):
         for l in live:
             self.lsLive.append([l])
         for a in advalible:
-            print("A:" + a + ":")
             if a not in live:
                 self.lsAdvalible.append([a])
         
 
-    def pager_page_change(self, notebook, page, page_num):
-        if page_num == 2:
-            pass
-            #self.show_all()
+    def gpg_add_clicked(self, button):
+        selection = self.tvAdvalible.get_selection()
+        model, treeiter = selection.get_selected()
+        if treeiter != None:
+            print("You selected " + model[treeiter][0])
+            self.lsLive.append([model[treeiter][0]])
+            self.gpass.gpg_id_write(self.get_pass_path(), self.lsLive)
+            self.load_gpg_permissions()
 
+    def gpg_add_all_clicked(self, button):
+        pass
+
+    def gpg_remove_clicked(self, button):
+        pass
+
+    def gpg_remove_all_clicked(self, button):
+        pass
 
     #displays the selected account
     def displayAccount(self, accountToDisplay):
