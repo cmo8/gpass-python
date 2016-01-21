@@ -174,7 +174,13 @@ class BoxPassStore(Gtk.VBox):
         pass
 
     def gpg_remove_clicked(self, button):
-        pass
+        selection = self.tvLive.get_selection()
+        model, treeiter = selection.get_selected()
+        if treeiter != None:
+            print("You selected " + model[treeiter][0])
+            self.lsLive.remove(treeiter)
+            self.gpass.gpg_id_write(self.get_pass_path(), self.lsLive)
+            self.load_gpg_permissions()
 
     def gpg_remove_all_clicked(self, button):
         pass

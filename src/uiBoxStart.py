@@ -41,7 +41,7 @@ class BoxStart(Gtk.VButtonBox):
         while not loop_continue:
             response = dialogCreatePassStore.run()
             if response == Gtk.ResponseType.OK:
-                real_name = ''
+                key_uid = ''
                 if dialogCreatePassStore.gen_key:
                     real_name = dialogCreatePassStore.createGPGkey.get_real_name()
                     email = dialogCreatePassStore.createGPGkey.get_email()
@@ -50,16 +50,15 @@ class BoxStart(Gtk.VButtonBox):
                     if real_name != "" and email != "" and password != "" and passwordc != "" and password == passwordc:
                         print("Real Name:", real_name)
                         print("Email:", email)
-                        self.gpg.generate_key(real_name, email, password)
-                        #self.config.set_gpgkey(email)
+                        key_uid = self.gpg.generate_key(real_name, email, password)
                         loop_continue = True
                     else:
                         print("Can NOT Generate Key!!")
                         pass
                 else:
-                    real_name = dialogCreatePassStore.selected_key
+                    key_uid = dialogCreatePassStore.selected_key
                     loop_continue = True
-                self.parent.gpass.create(real_name, dialogCreatePassStore.txtLocation.get_text(), dialogCreatePassStore.checkBoxGit.get_active())
+                self.parent.gpass.create(key_uid, dialogCreatePassStore.txtLocation.get_text(), dialogCreatePassStore.checkBoxGit.get_active())
                 self.config.save_config()
                 self.parent.setPassStoreView()
                 print("OK button clicked")

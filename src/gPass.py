@@ -176,10 +176,17 @@ class GPass:
 
     def gpg_id_write(self, path, gpgid):
         gpgid_path = self.build_path(path) + '/.gpg-id'
-        print("Writing..." + gpgid_path)
-        with open(gpgid_path, 'w') as f:
-            for key in gpgid:
-                f.write(key[0] + '\n')
+        if len(gpgid) > 0:
+            print("Writing..." + gpgid_path)
+            with open(gpgid_path, 'w') as f:
+                for key in gpgid:
+                    f.write(key[0] + '\n')
+            return True
+        elif not gpgid_path == self.config.get_password_store() + './gpg-id':
+            os.remove(gpgid_path)
+            return True
+        else:
+            return False
 
     #Returns an array of the items in the directory location
     def pass_array(self, child_path = ""):

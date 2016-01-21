@@ -10,17 +10,9 @@ MAIN=main.py
 run:
 	python3 src/$(MAIN)
 
-testh:
-	mkdir -p $(HOME)/usr
-	mkdir -p $(HOME)/usr/bin
-	mkdir -p $(HOME)/usr/share
-	mkdir -p $(HOME)$(BASE)
-	mkdir -p $(HOME)$(LIB)
-	mkdir -p $(HOME)$(IMAGES)
-	cp *.py $(HOME)$(LIB)
-	cp *.glade $(HOME)$(LIB)
-	rm -f $(HOME)$(BIN)
-	ln -s $(HOME)$(LIB)$(MAIN) $(HOME)$(BIN)
+dev:
+	python3 src/test_gpass.py
+	python3 src/test_gpassgpg.py
 
 install:
 	mkdir -p $(BASE)
@@ -44,3 +36,4 @@ setup:
 	sudo python3 -m pip install python-gnupg
 	sudo dnf install redhat-rpm-config
 	sudo python3 -m pip install gittle
+	sudo python3 -m pip install nose

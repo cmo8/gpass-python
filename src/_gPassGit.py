@@ -47,3 +47,4 @@ class GPassGit:
     	self.add(filepath)
     	self.commit(user, em, msg)
     	self.push(key)
+        
