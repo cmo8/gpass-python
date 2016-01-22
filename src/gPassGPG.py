@@ -12,17 +12,35 @@ class GPassGPG:
         rtn = []
         pub_key = self.gpg.list_keys(private_keys)
         for key in pub_key:
-            #print("KeyID:", type(key['keyid']))
             rtn.append(key['uids'][0])
         return rtn
 
     #Displays a summery of all the public keys
     def list_public_keys(self):
+        pub_key = []
         pub_key = self.gpg.list_keys()
+        return pub_key
 
     #Displays a summery of all the private keys
     def list_private_keys(self):
+        pri_key = []
         pri_key = self.gpg.list_keys(True)
+        return pri_key
+
+    def get_key_by_fingerprint(self, fingerprint):
+        keys = self.gpg.list_keys()
+        for key in keys:
+            if str(key['fingerprint']) == fingerprint:
+                return str(key['uids'][0])
+        return ''
+
+    #create GPG key
+    def generate_key(self, name_real, name_email, passphrase):
+        params = {"key_type": "RSA", "key_length": 2048, "name_real": name_real, "name_email": name_email, "passphrase": passphrase}
+        input_data = self.gpg.gen_key_input(**params)
+        fingerprint = self.gpg.gen_key(input_data)
+        key_uid = self.get_key_by_fingerprint(str(fingerprint))
+        return str(key_uid)
 
     #Uses the default public key to encrypt the message unless otherwise stated
     def encrypt(self, message_in, keys):
@@ -50,17 +68,4 @@ class GPassGPG:
             plain_str = filepath_out
         return plain_str
 
-    def get_key_by_fingerprint(self, fingerprint):
-        keys = self.gpg.list_keys()
-        for key in keys:
-            if key[fingerprint] == fingerprint:
-                return key[uid]
-        return None
 
-    #create GPG key
-    def generate_key(self, name_real, name_email, passphrase):
-        params = {"key_type": "RSA", "key_length": 2048, "name_real": name_real, "name_email": name_email, "passphrase": passphrase}
-        input_data = self.gpg.gen_key_input(**params)
-        fingerprint = self.gpg.gen_key(input_data)
-        key_uid = self.get_key_by_fingerprint(fingerprint)
-        return key_uid
