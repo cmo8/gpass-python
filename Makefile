@@ -32,8 +32,10 @@ uninstall:
 	rmdir $(BASE)
 
 setup:
-	sudo python3 -m pip install gitpython
-	sudo python3 -m pip install python-gnupg
+	python3 -m pip install gitpython
+	python3 -m pip install python-gnupg
+	python3 -m pip install gittle
+	python3 -m pip install nose
+
+fedora:
 	sudo dnf install redhat-rpm-config
-	sudo python3 -m pip install gittle
-	sudo python3 -m pip install nose
