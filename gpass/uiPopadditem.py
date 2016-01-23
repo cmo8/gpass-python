@@ -17,12 +17,15 @@ class PopAddItem:
     def on_add_item_button_click(self, button):
         key = self.txtKey.get_text()
         value = self.txtValue.get_text()
-        self.data += key.lower() + ': ' + value + '\n'
-        self.gpass.insert(self.parent.get_pass_path(), self.data)
-        self.parent.new_status("Added:" + key + ": " + value)
-        #print("Add Item")
-        self.parent.clear_account_info(False)
-        self.parent.displayAccount(self.parent.get_pass_path())
+        if key != '' and value != '':
+            self.data += key.lower() + ': ' + value + '\n'
+            self.gpass.insert(self.parent.get_pass_path(), self.data)
+            self.parent.new_status("Added:" + key + ": " + value)
+            #print("Add Item")
+            self.parent.clear_account_info(False)
+            self.parent.displayAccount(self.parent.get_pass_path())
+        else:
+            self.parent.clear_status()
         self.popAddItem.hide()
 
     #Create the Add Item poperover confirm menu

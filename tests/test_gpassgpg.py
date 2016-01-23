@@ -9,34 +9,44 @@ class Test_GPassGPG(unittest.TestCase):
     def setup(self):
         print('Creating GPG home...')
         os.system('mkdir ' + gpghome)
+        print('Selecting GPG Home...')
         gpg = GPassGPG(gpgbinary, gpghome)
+        print('Returning GPG Home...')
         return gpg
 
     def clean(self):
         print('Removing GPG home...')
         os.system('rm -rf ' + gpghome)
+        print('End Of Test Case')
+        print('=========================================================')
 
     def test_empty_list_keys(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
+        print('self.assertEqual(gpg.list_keys(), [])')
         #Test for no public keys
         self.assertEqual(gpg.list_keys(), [])
         #Test for no Private keys
+        print('self.assertEqual(gpg.list_keys(True), [])')
         self.assertEqual(gpg.list_keys(True), [])
         self.clean()
 
     def test_empty_list_public_keys(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         #Test for no public keys
         self.assertEqual(gpg.list_public_keys(), [])
         self.clean()
 
     def test_empty_list_private_keys(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         #Test for no Private keys
         self.assertEqual(gpg.list_private_keys(), [])
         self.clean()
 
     def test_generate_key(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         #Test for no Private keys
         name_real = "TestGPG"
@@ -47,6 +57,7 @@ class Test_GPassGPG(unittest.TestCase):
         self.clean()
 
     def test_get_key_by_fingerprint(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         name_real = "TestGPG"
         name_email = "testgpg@cmo.dev"
@@ -57,6 +68,7 @@ class Test_GPassGPG(unittest.TestCase):
         self.clean()
 
     def test_encrypt(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         name_real = "TestGPG"
         name_email = "testgpg@cmo.dev"
@@ -64,16 +76,17 @@ class Test_GPassGPG(unittest.TestCase):
         msg = 'Test text for encrypting'
         key = gpg.get_key_by_fingerprint(gpg.generate_key(name_real, name_email, passphrase))
         crypto = gpg.encrypt(msg,[key])
-        self.assertEqual(gpg.encrypt(msg,[key]), crypto)
+        self.assertEqual(str(gpg.encrypt(msg,[key])), str(crypto))
         name_real = "TestGPG2"
         name_email = "testgpg2@cmo.dev"
         passphrase = "testgpg2"
         keyt = gpg.get_key_by_fingerprint(gpg.generate_key(name_real, name_email, passphrase))
         crypto = gpg.encrypt(msg,[key, keyt])
-        self.assertEqual(gpg.encrypt(msg,[key, keyt]), crypto)
+        self.assertEqual(str(gpg.encrypt(msg,[key, keyt])), str(crypto))
         self.clean()
 
     def test_decrypt(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         name_real = "TestGPG"
         name_email = "testgpg@cmo.dev"
@@ -91,6 +104,7 @@ class Test_GPassGPG(unittest.TestCase):
         self.clean()
         
     def test_encrypt_to_file(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         name_real = "TestGPG"
         name_email = "testgpg@cmo.dev"
@@ -103,7 +117,7 @@ class Test_GPassGPG(unittest.TestCase):
         data = ''
         with open(filepath_out, 'r') as f:
             data=f.read().replace('\n', '')
-        self.assertEqual(data, crypto)
+        self.assertEqual(str(data), str(crypto))
         os.system('rm ' + filepath_out)
         name_real = "TestGPG2"
         name_email = "testgpg2@cmo.dev"
@@ -114,11 +128,12 @@ class Test_GPassGPG(unittest.TestCase):
         data = ''
         with open(filepath_out, 'r') as f:
             data=f.read().replace('\n', '')
-        self.assertEqual(data, crypto)
+        self.assertEqual(data, str(crypto))
         os.system('rm ' + filepath_out)
         self.clean()
         
     def test_decrypt_from_file(self):
+        os.system('rm -rf ' + gpghome)
         gpg = self.setup()
         name_real = "TestGPG"
         name_email = "testgpg@cmo.dev"
@@ -127,7 +142,7 @@ class Test_GPassGPG(unittest.TestCase):
         filepath_out = 'test.pgp'
         key = gpg.get_key_by_fingerprint(gpg.generate_key(name_real, name_email, passphrase))
         gpg.encrypt_to_file(msg,filepath_out, [key])
-        self.assertEqual(gpg.decrypt_from_file(filepath_out), msg)
+        self.assertEqual(str(gpg.decrypt_from_file(filepath_out)), msg)
         os.system('rm ' + filepath_out)
         name_real = "TestGPG2"
         name_email = "testgpg2@cmo.dev"

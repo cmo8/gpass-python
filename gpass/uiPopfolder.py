@@ -12,12 +12,14 @@ class PopFolder:
 
     #Button Create Folder click event
     def create_folder_clicked(self, button):
-        if not self.folder.get_text() == "":
-            self.gpass.createFolder(self.folder.get_text(), self.parent.get_pass_path())
+        foldername = self.folder.get_text()
+        if not foldername == "":
+            self.gpass.createFolder(foldername, self.parent.get_pass_path())
             self.parent.repack_buttons()
+            self.parent.new_status("Created folder: " + foldername)
             self.popFolder.hide()
         else:
-            print("No new folder entered")
+            self.parent.clear_status()
 
     #Button Cancel Folder click event
     def cancel_clicked(self, button, name):
