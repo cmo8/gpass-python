@@ -23,7 +23,7 @@ class BoxPassStore(Gtk.VBox):
 
         #Building UI
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("src/uiBoxPassStore.glade")
+        self.builder.add_from_file("gpass/uiBoxPassStore.glade")
         self.builder.connect_signals(self)
         #Application Window
         self.passStorePanel = self.builder.get_object("passStorePanel")

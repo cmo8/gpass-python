@@ -84,7 +84,7 @@ install: clean
 	python setup.py install
 
 run:
-	python3 src/main.py
+	python3 gpass/main.py
 
 setup:
 	python3 -m pip install gitpython
