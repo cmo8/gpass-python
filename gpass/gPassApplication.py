@@ -2,7 +2,6 @@ import sys
 from gi.repository import Gio, Gtk
 from gPassConfig import GPassConfig
 from uiWindowMainUI import WindowMainUI
-from uiWindowConfigUI import WindowConfigUI
 
 class GPassApplication(Gtk.Application):
 
@@ -12,7 +11,7 @@ class GPassApplication(Gtk.Application):
         #reads in the config file
         self.config = GPassConfig()
         self.window = WindowMainUI(self.config)
-        self.windowConfigUI = WindowConfigUI(self.config)
+        #self.windowConfigUI = WindowConfigUI(self.config)
         self.connect('activate', self.on_app_activate)
         self.connect('startup', self.on_app_startup)
         self.connect('shutdown', self.on_app_shutdown)
@@ -57,7 +56,7 @@ class GPassApplication(Gtk.Application):
         app.add_window(self.window)
 
     def on_action_preferences_activated(self, action, user_data):
-        self.windowConfigUI.show()
+        self.window.setConfigView()
 
     def on_action_about_activated(self, action, user_data):
         print('will show about dialog')

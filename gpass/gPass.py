@@ -10,6 +10,7 @@ class GPass:
         #self.git = GPassGit(self.config.get_password_store())
 
     def create(self, gpgkey, folderpath, setGit=False):
+
         os.mkdir(folderpath)
         self.config.set_password_store(folderpath)
         if setGit:

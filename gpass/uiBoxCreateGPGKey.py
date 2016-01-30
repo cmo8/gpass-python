@@ -36,6 +36,9 @@ class BoxCreateGPGKey(Gtk.VBox):
         self.passwordCGroup.add(self.lblPasswordC)
         self.txtPasswordC = Gtk.Entry()
         self.passwordCGroup.add(self.txtPasswordC)
+
+        self.txtPassword.set_visibility(True)
+        self.txtPasswordC.set_visibility(True)
         self.show_all()
 
     def get_real_name(self):
