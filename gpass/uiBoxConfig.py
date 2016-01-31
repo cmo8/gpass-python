@@ -39,7 +39,46 @@ class BoxConfig(Gtk.VBox):
         self.stackCharSet = self.builder.get_object("stackCharSet")
         self.txtCharSetLabel = self.builder.get_object("txtCharSetLabel")
         self.txtCharSet = self.builder.get_object("txtCharSet")
+        self.charSets = {}
+        self.charLive = []
         self.load_config()
+
+    def add_char_set_stack(self, a, char_sets):
+        dic_char_set = {}
+        tmp = Gtk.VBox(10)
+        #Character Group Title
+        title = Gtk.HBox(10)
+        tmp.add(title)
+        lblCharSetTitle = Gtk.Label("Group Label:")
+        title.add(lblCharSetTitle)
+        charSetLabel = Gtk.Entry()
+        charSetLabel.set_text(a)
+        dic_char_set["charLabel"] =  charSetLabel
+        title.add(charSetLabel)
+        #Character elements
+        charSetBox = Gtk.HBox(10)
+        tmp.add(charSetBox)
+        lblCharSet = Gtk.Label("Character Set:")
+        charSetBox.add(lblCharSet)
+        charSet = Gtk.Entry()
+        charSet.set_text(char_sets)
+        dic_char_set["charSet"] =  charSet
+        charSetBox.add(charSet)
+        #Is Live Check Button
+        charSetLiveBox = Gtk.HBox(10)
+        checkCharSetLive = Gtk.CheckButton("Character Set is Live")
+        set_to_live = False
+        if a in self.charLive:
+            set_to_live = True
+        checkCharSetLive.set_active(set_to_live)
+        dic_char_set["charLive"] =  checkCharSetLive
+        charSetLiveBox.add(checkCharSetLive)
+        btnDelete = Gtk.Button("Delete")
+        charSetLiveBox.add(btnDelete)
+        btnDelete.connect("clicked", self.btnDelete_clicked)
+        tmp.add(charSetLiveBox)
+        self.charSets[a] = dic_char_set
+        self.stackCharSet.add_titled(tmp, a, a)
 
     def load_config(self):
         self.folderChooserPasswordStore.set_current_folder(self.config.get_password_store())
@@ -47,33 +86,9 @@ class BoxConfig(Gtk.VBox):
         self.fileChooserGPGHome.set_current_folder(self.config.get_gpghome())
         self.adjustmentPasswordLength.set_value(self.config.get_pass_length())
         char_sets = self.config.get_char_set()
-        live_char_set = self.config.get_live_char_set()
+        self.charLive = self.config.get_live_char_set()
         for a in char_sets:
-            tmp = Gtk.VBox(10)
-            #Character Group Title
-            title = Gtk.HBox(10)
-            tmp.add(title)
-            lblCharSetTitle = Gtk.Label("Group Label:")
-            title.add(lblCharSetTitle)
-            charSetLabel = Gtk.Entry()
-            charSetLabel.set_text(a)
-            title.add(charSetLabel)
-            #Character elements
-            charSetBox = Gtk.HBox(10)
-            tmp.add(charSetBox)
-            lblCharSet = Gtk.Label("Character Set:")
-            charSetBox.add(lblCharSet)
-            charSet = Gtk.Entry()
-            charSet.set_text(char_sets[a])
-            charSetBox.add(charSetLabel)
-            #Is Live Check Button
-            checkCharSetLive = Gtk.CheckButton("Character Set is Live:")
-            set_to_live = False
-            if a in live_char_set:
-                set_to_live = True
-            checkCharSetLive.set_active(set_to_live)
-            tmp.add(checkCharSetLive)
-            self.stackCharSet.add_named(tmp, a)
+            self.add_char_set_stack(a, char_sets[a])
         self.show_all()
         pass
 
@@ -90,11 +105,33 @@ class BoxConfig(Gtk.VBox):
     def btnCancel_clicked(self, button):
         self.parent.setPastView()
 
+    def btnDelete_clicked(self, button):
+        current = self.stackCharSet.get_visible_child_name()
+        del self.charSets[current]
+        print(self.charSets)
+        self.stackCharSet.remove(self.stackCharSet.get_visible_child())
+        self.show_all()
+
     def btnAdd_clicked(self, button):
-        print('btnAdd_clicked')
+        self.add_char_set_stack(self.txtCharSetLabel.get_text(), self.txtCharSet.get_text())
+        self.show_all()
 
     def btnSave_clicked(self, button):
-        print('btnSave_clicked')
+        self.config.set_password_store(self.folderChooserPasswordStore.get_current_folder())
+        self.config.set_gpgbinary(self.fileChooserGPGBinary.get_filename())
+        self.config.set_gpghome(self.fileChooserGPGHome.get_current_folder())
+        self.config.set_password_length(int(self.adjustmentPasswordLength.get_value()))
+        save_char_sets = {}
+        save_live_char_set = []
+        for cSet in self.charSets:
+            tmp = self.charSets[cSet]
+            save_char_sets[tmp["charLabel"].get_text()] = tmp["charSet"].get_text()
+            if tmp["charLive"].get_active():
+                save_live_char_set.append(cSet)
+        self.config.set_char_set(save_char_sets)
+        self.config.set_char_live(save_live_char_set)
+        self.config.save_config()
+        self.parent.setPastView()
 
     #Show the Window
     def show(self):

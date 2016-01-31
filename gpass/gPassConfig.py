@@ -93,6 +93,15 @@ class GPassConfig:
             return self.isgpghome
         return False
 
+    def set_password_length(self, pass_length):
+        self.password_len = pass_length
+
+    def set_char_set(self, char_set):
+        self.char_set = char_set
+
+    def set_char_live(self, char_live):
+        self.live_char_set = char_live
+
     def get_password_store(self):
         return self.password_store
 

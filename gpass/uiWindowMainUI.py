@@ -70,5 +70,8 @@ class WindowMainUI(Gtk.ApplicationWindow):
     def setPastView(self):
         self.remove(self.currentBox)
         self.add(self.pastBox)
+        if self.currentBox == self.configBox:
+            self.configBox = None
+        self.currentBox = self.pastBox
         self.pastBox = None
         self.show_all()
