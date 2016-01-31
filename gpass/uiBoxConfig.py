@@ -32,22 +32,49 @@ class BoxConfig(Gtk.VBox):
 
         #folderChooserPasswordStore
         self.folderChooserPasswordStore = self.builder.get_object("folderChooserPasswordStore")
-        #fileChooserGPGBinary
         self.fileChooserGPGBinary = self.builder.get_object("fileChooserGPGBinary")
-        #fileChooserGPGHome
         self.fileChooserGPGHome = self.builder.get_object("fileChooserGPGHome")
-        #scalePasswordLength
         self.adjustmentPasswordLength = self.builder.get_object("adjustmentPasswordLength")
-        #stackSidebarCharSets
         self.stackSidebarCharSets = self.builder.get_object("stackSidebarCharSets")
-        #txtCharSetLabel
+        self.stackCharSet = self.builder.get_object("stackCharSet")
         self.txtCharSetLabel = self.builder.get_object("txtCharSetLabel")
-        #txtCharSet
         self.txtCharSet = self.builder.get_object("txtCharSet")
         self.load_config()
 
     def load_config(self):
+        self.folderChooserPasswordStore.set_current_folder(self.config.get_password_store())
+        self.fileChooserGPGBinary.set_filename(self.config.get_gpgbinary())
+        self.fileChooserGPGHome.set_current_folder(self.config.get_gpghome())
         self.adjustmentPasswordLength.set_value(self.config.get_pass_length())
+        char_sets = self.config.get_char_set()
+        live_char_set = self.config.get_live_char_set()
+        for a in char_sets:
+            tmp = Gtk.VBox(10)
+            #Character Group Title
+            title = Gtk.HBox(10)
+            tmp.add(title)
+            lblCharSetTitle = Gtk.Label("Group Label:")
+            title.add(lblCharSetTitle)
+            charSetLabel = Gtk.Entry()
+            charSetLabel.set_text(a)
+            title.add(charSetLabel)
+            #Character elements
+            charSetBox = Gtk.HBox(10)
+            tmp.add(charSetBox)
+            lblCharSet = Gtk.Label("Character Set:")
+            charSetBox.add(lblCharSet)
+            charSet = Gtk.Entry()
+            charSet.set_text(char_sets[a])
+            charSetBox.add(charSetLabel)
+            #Is Live Check Button
+            checkCharSetLive = Gtk.CheckButton("Character Set is Live:")
+            set_to_live = False
+            if a in live_char_set:
+                set_to_live = True
+            checkCharSetLive.set_active(set_to_live)
+            tmp.add(checkCharSetLive)
+            self.stackCharSet.add_named(tmp, a)
+        self.show_all()
         pass
 
     def btnCreateGPGKey_clicked(self, button):

@@ -164,3 +164,9 @@ class GPassConfig:
             rtn += self.char_set[a]
         #print(rtn)
         return rtn
+
+    def get_char_set(self):
+        return self.char_set
+
+    def get_live_char_set(self):
+        return self.live_char_set
