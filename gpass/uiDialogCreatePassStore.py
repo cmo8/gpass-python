@@ -33,10 +33,13 @@ class DialogCreatePassStore(Gtk.Dialog):
         self.lblKeys = Gtk.Label("GPG Key:")
         self.vlBox.attach_next_to(self.lblKeys, self.lblLocation, Gtk.PositionType.BOTTOM, 1, 1)
         if os.path.isdir(self.config.gpghome) and len(keys) > 0:
-            name_store = Gtk.ListStore(str, str)
+            name_store = Gtk.ListStore(int, str)
+            index = 0
             for key in keys:
                 #print(key, "=>", keys[key])
-                name_store.append([key, keys[key]])
+                print(key)
+                name_store.append([index, key])
+                index = index + 1
             self.listBoxGPGkey = Gtk.ComboBox.new_with_model_and_entry(name_store)
             self.listBoxGPGkey.connect("changed", self.listBoxGPGkey_changed)
             self.listBoxGPGkey.set_entry_text_column(1)

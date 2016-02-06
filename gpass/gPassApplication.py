@@ -85,7 +85,7 @@ class GPassApplication(Gtk.Application):
             self.config.set_password_store(filechooserdialog.get_filename())
             self.config.config_test()
             self.config.save_config()
-            self.window.repack_buttons()
+            self.window.setPassStoreView()
         filechooserdialog.destroy()
 
     def on_action_cps_activated(self, action, user_data):

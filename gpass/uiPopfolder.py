@@ -14,6 +14,9 @@ class PopFolder:
     def create_folder_clicked(self, button):
         foldername = self.folder.get_text()
         if not foldername == "":
+            parent_dir_path = self.parent.get_pass_path()
+            if parent_dir_path.endswith('.gpg'):
+                parent_dir_path = parent_dir_path.replace(self.parent.passDepth.pop(), "")
             self.gpass.createFolder(foldername, self.parent.get_pass_path())
             self.parent.repack_buttons()
             self.parent.new_status("Created folder: " + foldername)

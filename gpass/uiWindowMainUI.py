@@ -25,14 +25,10 @@ class WindowMainUI(Gtk.ApplicationWindow):
         print(config_loaded)
         self.config.config_test()
         if not config_loaded:
-            self.startBox = BoxStart(self)
-            self.add(self.startBox)
-            self.currentBox = self.startBox
+            self.setStartUpView()
         else:
             #Application Window
-            self.passStoreBox = BoxPassStore(self)
-            self.add(self.passStoreBox)
-            self.currentBox = self.passStoreBox
+            self.setPassStoreView()
 
     #Show the Window
     def show(self):
@@ -43,7 +39,8 @@ class WindowMainUI(Gtk.ApplicationWindow):
         self.present()
 
     def setPassStoreView(self):
-        self.remove(self.currentBox)
+        if not self.currentBox == None:
+            self.remove(self.currentBox)
         if self.passStoreBox == None:
             self.passStoreBox = BoxPassStore(self)
         self.add(self.passStoreBox)
@@ -51,7 +48,8 @@ class WindowMainUI(Gtk.ApplicationWindow):
         self.show_all()
 
     def setStartUpView(self):
-        self.remove(self.currentBox)
+        if not self.currentBox == None:
+            self.remove(self.currentBox)
         if self.startBox == None:
             self.startBox = BoxStart(self)
         self.add(self.startBox)
@@ -59,7 +57,8 @@ class WindowMainUI(Gtk.ApplicationWindow):
         self.show_all()
 
     def setConfigView(self):
-        self.pastBox = self.currentBox
+        if not self.currentBox == None:
+            self.pastBox = self.currentBox
         self.remove(self.currentBox)
         if self.configBox == None:
             self.configBox = BoxConfig(self)
@@ -68,7 +67,8 @@ class WindowMainUI(Gtk.ApplicationWindow):
         self.show_all()
 
     def setPastView(self):
-        self.remove(self.currentBox)
+        if not self.currentBox == None:
+            self.remove(self.currentBox)
         self.add(self.pastBox)
         if self.currentBox == self.configBox:
             self.configBox = None

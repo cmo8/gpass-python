@@ -42,6 +42,8 @@ class DialogClonePassStoreRepo(Gtk.Dialog):
         self.txtRepo = Gtk.Entry()
         self.vlBox.attach_next_to(self.txtRepo, self.lblGit, Gtk.PositionType.RIGHT, 2, 1)
         #self.gitGroup.add(self.txtRepo)
+        self.lblGitHelp = Gtk.Label("SSH keys need to be setup and working")
+        self.vlBox.attach_next_to(self.lblGitHelp, self.lblGit, Gtk.PositionType.BOTTOM, 1, 1)
 
         self.show_all()
 
