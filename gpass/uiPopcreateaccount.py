@@ -15,6 +15,7 @@ class popCreateAccount:
         self.txtAccount = Gtk.Entry()
         self.txtPassword = Gtk.Entry()
         self.txtConfirm = Gtk.Entry()
+        self.scalePassLenAdj = Gtk.Adjustment(self.gpass.config.get_pass_length(), 0, 50, 10, 1, 0)
         self.btnSave = Gtk.Button("Save")
         self.btnCheckShow = Gtk.CheckButton("Show")
         #Creating a popover
@@ -29,8 +30,11 @@ class popCreateAccount:
         popover.add(gbox)
 
         labelAccount = Gtk.Label("Account: ")
+        scalePassLen = Gtk.Scale()
+        scalePassLen.set_adjustment(self.scalePassLenAdj)
         gbox.attach(labelAccount,    0, 0, 1, 1)
         gbox.attach(self.txtAccount, 1, 0, 1, 1)
+        gbox.attach(scalePassLen,    2, 0, 1, 1)
 
         labelPass = Gtk.Label("Password: ")
         btnGenerate = Gtk.Button("Generate")
@@ -91,7 +95,7 @@ class popCreateAccount:
     def btnGeneratePassword_clicked(self, button):
         gen = "R@nd0m"
         char_set = self.parent.config.get_active_char_group()
-        gen = ''.join(random.sample(char_set*6, self.parent.config.get_pass_length()))
+        gen = ''.join(random.sample(char_set*6, int(self.scalePassLenAdj.get_value())))
         self.txtPassword.set_text(gen)
         self.txtConfirm.set_text(gen)
         #print('btnGeneratePassword_clicked')

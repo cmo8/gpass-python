@@ -1,18 +1,18 @@
 from gi.repository import Gtk, Gdk
+#gi.require_version('Gtk', '3.0')
 from gPass import GPass
 from uiBoxStart import BoxStart
 from uiBoxPassStore import BoxPassStore
 from uiBoxConfig import BoxConfig
 
-class WindowMainUI(Gtk.ApplicationWindow):
+class WindowMainUI(Gtk.VBox):
 
     #Constructor
     def __init__(self, config):
-        Gtk.ApplicationWindow.__init__(self)
-        self.set_default_size(700, 350);
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_title("GPass")
-
+        Gtk.VBox(self, 10);
+        #self.set_position(Gtk.WindowPosition.CENTER)
+        #self.set_title("GPass")
+        #print("test")
         #Create PyPass object
         self.config = config
         config_loaded = self.config.load_config()
@@ -29,9 +29,11 @@ class WindowMainUI(Gtk.ApplicationWindow):
         else:
             #Application Window
             self.setPassStoreView()
+        print("ApplicationWindow Done")
 
     #Show the Window
     def show(self):
+        print("Show Window")
         self.show_all()
 
     #bring window to the top

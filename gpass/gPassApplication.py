@@ -1,7 +1,7 @@
 import sys
 from gi.repository import Gio, Gtk
 from gPassConfig import GPassConfig
-from uiWindowMainUI import WindowMainUI
+from uiBoxViewManager import BoxViewManager
 
 class GPassApplication(Gtk.Application):
 
@@ -10,7 +10,9 @@ class GPassApplication(Gtk.Application):
         #Gtk.Application.new("org.cmo.gpass", 0)
         #reads in the config file
         self.config = GPassConfig()
-        self.window = WindowMainUI(self.config)
+        self.window = Gtk.ApplicationWindow()
+
+
         #self.windowConfigUI = WindowConfigUI(self.config)
         self.connect('activate', self.on_app_activate)
         self.connect('startup', self.on_app_startup)
@@ -26,13 +28,15 @@ class GPassApplication(Gtk.Application):
     def on_app_startup(self, app):
         Gtk.Application.do_startup(self)
 
-        menumodel = Gio.Menu()
-        menumodel.append("Create Password Store", "app.createpasswordstore")
-        menumodel.append("Open Password Store", "app.openpasswordstore")
-        menumodel.append("Preferences", "app.preferences")
-        menumodel.append("About", "app.about")
-        menumodel.append("Quit", "app.quit")
-        self.set_app_menu(menumodel)
+        print("start on_app_startup")
+
+        self.menumodel = Gio.Menu()
+        self.menumodel.append("Create Password Store", "app.createpasswordstore")
+        self.menumodel.append("Open Password Store", "app.openpasswordstore")
+        self.menumodel.append("Preferences", "app.preferences")
+        self.menumodel.append("About", "app.about")
+        self.menumodel.append("Quit", "app.quit")
+        self.set_app_menu(self.menumodel)
 
         cps_action = Gio.SimpleAction.new("createpasswordstore", None)
         cps_action.connect("activate", self.on_action_cps_activated)
@@ -53,16 +57,26 @@ class GPassApplication(Gtk.Application):
         quit_action = Gio.SimpleAction.new("quit", None)
         quit_action.connect("activate", self.on_action_quit_activated)
         self.add_action(quit_action)
+
         app.add_window(self.window)
 
+        self.window.set_default_size(850, 400);
+        self.window.set_position(Gtk.WindowPosition.CENTER)
+        self.window.set_title("GPass")
+        self.viewManager = BoxViewManager(self.window, self.config)
+        self.window.add(self.viewManager)
+
+        print("on_app_startup Done")
+
     def on_action_preferences_activated(self, action, user_data):
-        self.window.setConfigView()
+        self.viewManager.setConfigView()
 
     def on_action_about_activated(self, action, user_data):
         print('will show about dialog')
 
     def on_action_quit_activated(self, action, user_data):
         # This will close the default gtk mainloop
+        print("Quit gPass")
         self.app.quit()
 
     def select_repo(self, action):
@@ -85,7 +99,7 @@ class GPassApplication(Gtk.Application):
             self.config.set_password_store(filechooserdialog.get_filename())
             self.config.config_test()
             self.config.save_config()
-            self.window.setPassStoreView()
+            self.viewManager.passStoreBox.repack_buttons()
         filechooserdialog.destroy()
 
     def on_action_cps_activated(self, action, user_data):

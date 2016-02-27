@@ -131,7 +131,9 @@ class BoxConfig(Gtk.VBox):
         self.config.set_char_set(save_char_sets)
         self.config.set_char_live(save_live_char_set)
         self.config.save_config()
+        self.parent.passStoreBox.repack_buttons()
         self.parent.setPastView()
+
 
     #Show the Window
     def show(self):
