@@ -10,7 +10,6 @@ class GPass:
         #self.git = GPassGit(self.config.get_password_store())
 
     def create(self, gpgkey, folderpath, setGit=False):
-
         os.mkdir(folderpath)
         self.config.set_password_store(folderpath)
         if setGit:
@@ -66,13 +65,22 @@ class GPass:
         else:
             print("Failed Delete: Not a File - ", self.build_path(account))
 
+    def flatten_structure(self, flat_results, results):
+        for a in results:
+            if type(results[a]) == str:
+                flat_results[a] = results[a]
+            else:
+                self.flatten_structure(flat_results, results[a])
+
     #Search the password database for matches
     def find(self, search):
         search_tokens = search.split()
         #print("Tokens: ", search_tokens)
-        resuts = self.build_gpg_list(self.build_path(''), search_tokens)
-        #print(resuts)
-        return resuts
+        results = self.build_gpg_list(self.build_path(''), search_tokens)
+        flat_results = {}
+        self.flatten_structure(flat_results, results)
+        #print(results)
+        return flat_results
 
     #Create a folder
     def createFolder(self, folder, path):
@@ -111,6 +119,7 @@ class GPass:
                     if self.search_file(x, search_tokens):
                         file_name = x[:-4]
                         rtn[file_name] = path + '/' + x
+                        #rtn[file_name] = path + '/' + x
                 else:
                     #print("else -> " + path + "/" + x)
                     tmp = self.build_gpg_list(path + "/" + x, search_tokens)
@@ -196,7 +205,9 @@ class GPass:
 
     #Concatinates the root password store path with the child path
     def build_path(self, child_path):
-        tmp = self.config.password_store
+        tmp = ''
+        if not child_path.startswith(self.config.password_store):
+            tmp = self.config.password_store
         if not child_path == '':
             tmp +=  '/' + child_path
         #print(tmp)

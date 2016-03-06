@@ -35,7 +35,7 @@ class BoxStart(Gtk.VButtonBox):
         print('btnCreatePassStore_clicked')
         keys = self.gpg.list_keys(True)
         self.gpg.list_public_keys()
-        dialogCreatePassStore = DialogCreatePassStore(self.parent, keys)
+        dialogCreatePassStore = DialogCreatePassStore(self.parent.parent, keys)
         print('btnCreatePassStore_clicked')
         loop_continue = False
         while not loop_continue:
@@ -72,7 +72,7 @@ class BoxStart(Gtk.VButtonBox):
 
     def btnSelectPassStore_clicked(self, button):
         #Create a folder
-        filechooserdialog = Gtk.FileChooserDialog(self.parent, title="Open Password Store", buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        filechooserdialog = Gtk.FileChooserDialog(self.parent.parent, title="Open Password Store", buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         filechooserdialog.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         email_filter = Gtk.FileFilter()
         email_filter.set_name("Folder")
@@ -90,7 +90,7 @@ class BoxStart(Gtk.VButtonBox):
         print('btnSelectPassStore_clicked')
 
     def btnGitClonePassStore_clicked(self, button):
-        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent)
+        dialogClonePassStoreRepo = DialogClonePassStoreRepo(self.parent.parent)
         response = dialogClonePassStoreRepo.run()
 
         if response == Gtk.ResponseType.OK:

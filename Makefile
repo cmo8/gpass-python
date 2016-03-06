@@ -89,7 +89,7 @@ run:
 setup:
 	python3 -m pip install gitpython
 	python3 -m pip install python-gnupg
-	python3 -m pip install gittle
+	#python3 -m pip install gittle
 	#python3 -m pip install nose
 
 fedora:

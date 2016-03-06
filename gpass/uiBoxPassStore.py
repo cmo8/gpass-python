@@ -1,13 +1,11 @@
 from gi.repository import Gtk, Gdk
-#from gPass import GPass
-#from createAccountUI import CreateAccountUI
+from uiBtngPass import BtngPass
 from uiPopcreateaccount import popCreateAccount
 from uiPopdelete import PopDelete
 from uiPopadditem import PopAddItem
 from uiPopfolder import PopFolder
 
 class BoxPassStore(Gtk.VBox):
-
     #Constructor
     def __init__(self, parent):
         Gtk.VBox.__init__(self, 10)
@@ -74,6 +72,11 @@ class BoxPassStore(Gtk.VBox):
         #Add pass database buttons
         self.pack_buttons(self.gpass.pass_array())
 
+################################################################################
+#
+# Button Handlers
+#
+################################################################################
     #New Button Click Handler
     def btnNew_clicked(self, button):
         self.clear_status()
@@ -142,13 +145,45 @@ class BoxPassStore(Gtk.VBox):
         self.clear_status()
         print("btnMenu_clicked")
 
+    #Show and hide password
+    def checkShow_toggled(self, check):
+        active = self.checkShow.get_active()
+        self.txtPasswordBox.set_visibility(active)
+
+################################################################################
+#
+# Search / grep the accounts
+#
+################################################################################
     #Handler for the search entity
     def txtSearch_search_changed(self, txt):
         self.new_status("Search: " + self.txtSearch.get_text())
+        #TODO:// Make the dictionary flat
         tmp = self.gpass.find(self.txtSearch.get_text())
+        print(len(tmp))
+        if len(self.txtSearch.get_text()) > 0:
+            self.clear_account_info()
+            for x in self.passBtnArray:
+                self.listbox.remove(self.passBtnArray[x])
+            self.passBtnArray = {}
+        if len(tmp) > 0:
+            for x in tmp:
+                print(tmp[x])
+                if type(tmp[x]) == str:
+                    print(tmp[x])
+                    self.passBtnArray[x] = BtngPass(x, tmp[x], self)
+                    self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
+                    self.passBtnArray[x].show_all()
+        else:
+            self.passDepth = []
+            self.repack_buttons()
 
-
-#################################################################################################################
+################################################################################
+#
+# GPG permission tab functions
+#
+################################################################################
+    #Loads the
     def load_gpg_permissions(self):
         self.lsLive.clear()
         self.lsAdvalible.clear()
@@ -160,7 +195,6 @@ class BoxPassStore(Gtk.VBox):
             if a not in live:
                 self.lsAdvalible.append([a])
         
-
     def gpg_add_clicked(self, button):
         selection = self.tvAdvalible.get_selection()
         model, treeiter = selection.get_selected()
@@ -185,6 +219,11 @@ class BoxPassStore(Gtk.VBox):
     def gpg_remove_all_clicked(self, button):
         pass
 
+################################################################################
+#
+# Account managent
+#
+################################################################################
     #displays the selected account
     def displayAccount(self, accountToDisplay):
         #Get GPG file content
@@ -237,40 +276,11 @@ class BoxPassStore(Gtk.VBox):
         self.checkShow.set_sensitive(False)
         self.btnCopyToClipboard.set_sensitive(False)
 
-    #Show and hide password
-    def checkShow_toggled(self, check):
-        active = self.checkShow.get_active()
-        self.txtPasswordBox.set_visibility(active)
-
-    #bring window to the top
-    def bringToTop(self):
-        self.present()
-
-    def get_window(self):
-        return self.awindow
-
-    #Pack the buttons into the boxlist
-    def pack_buttons(self, pass_tree):
-        if len(self.passDepth) > 0:
-            back = "back"
-            self.passBtnArray[back] = Gtk.Button("Back")
-            self.passBtnArray[back].connect("clicked", self.btnBack_clicked)
-            self.listbox.pack_start(self.passBtnArray[back], False, True, 0)
-            self.passBtnArray[back].show()
-        for x in pass_tree:
-            self.passBtnArray[x] = Gtk.Button(x)
-            if x.endswith('/'):
-                self.passBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
-                self.passBtnArray[x].connect("button_press_event", self.btnFolder_clicked)
-                #print("Folder: ", pass_tree[x])
-            else:
-                self.passBtnArray[x].connect("clicked", self.btnPGP_clicked)
-                #print("File:   ", pass_tree[x])
-            self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
-            self.passBtnArray[x].show()
-        self.breadcrumbs()
-        self.load_gpg_permissions()
-
+################################################################################
+#
+# Breadcrumbs to show the path
+#
+################################################################################
     #Breadcrumbs Button Click
     def breadcrumbs_clicked(self, button):
         target_folder = button.get_label()
@@ -304,6 +314,33 @@ class BoxPassStore(Gtk.VBox):
                 self.locationbreadcrumbs.add(self.breadcrumbsBtnArray[x])
         self.locationbreadcrumbs.show_all()
 
+################################################################################
+#
+# Buttons for folder and GPG files
+#
+################################################################################
+    #Pack the buttons into the boxlist
+    def pack_buttons(self, pass_tree):
+        if len(self.passDepth) > 0:
+            back = "back"
+            self.passBtnArray[back] = Gtk.Button("Back")
+            self.passBtnArray[back].connect("clicked", self.btnBack_clicked)
+            self.listbox.pack_start(self.passBtnArray[back], False, True, 0)
+            self.passBtnArray[back].show()
+        for x in pass_tree:
+            self.passBtnArray[x] = Gtk.Button(x)
+            if x.endswith('/'):
+                self.passBtnArray[x].set_relief(Gtk.ReliefStyle.NONE)
+                self.passBtnArray[x].connect("button_press_event", self.btnFolder_clicked)
+                #print("Folder: ", pass_tree[x])
+            else:
+                self.passBtnArray[x].connect("clicked", self.btnPGP_clicked)
+                #print("File:   ", pass_tree[x])
+            self.listbox.pack_start(self.passBtnArray[x], False, True, 0)
+            self.passBtnArray[x].show()
+        self.breadcrumbs()
+        self.load_gpg_permissions()
+
     #repack the buttons from the boxlist
     def repack_buttons(self):
         self.clear_account_info()
@@ -325,6 +362,13 @@ class BoxPassStore(Gtk.VBox):
         #print(path)
         return path
 
+
+################################################################################
+#
+# Status Functions
+#
+################################################################################
+
     #Push Status
     def new_status(self, statusMSG):
         self.clear_status()
@@ -333,3 +377,15 @@ class BoxPassStore(Gtk.VBox):
     #Clear Status bar
     def clear_status(self):
         self.statusbar.remove_all(self.context)
+
+################################################################################
+#
+# Other functions
+#
+################################################################################
+    #bring window to the top
+    #def bringToTop(self):
+    #    self.present()
+
+    #def get_window(self):
+    #    return self.awindow
