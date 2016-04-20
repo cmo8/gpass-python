@@ -40,6 +40,8 @@ class GPassGPG:
         input_data = self.gpg.gen_key_input(**params)
         fingerprint = self.gpg.gen_key(input_data)
         key_uid = self.get_key_by_fingerprint(str(fingerprint))
+        #print("Fingerprint: ", str(fingerprint))
+        #print("Key UID: ", str(key_uid))
         return str(key_uid)
 
     #Uses the default public key to encrypt the message unless otherwise stated
@@ -49,6 +51,7 @@ class GPassGPG:
 
     #Decrypts the encrypted message with the private key
     def decrypt(self, encrypted_str_in):
+
         plain_str = self.gpg.decrypt(encrypted_str_in)
         return plain_str
 

@@ -65,6 +65,7 @@ class GPass:
         else:
             print("Failed Delete: Not a File - ", self.build_path(account))
 
+    #Take a complex dictionary with dictionaries inside and so on. If returns a dictionary with just key => string.
     def flatten_structure(self, flat_results, results):
         for a in results:
             if type(results[a]) == str:
