@@ -1,0 +1,16 @@
+# gpass-python
+GTK+ Password Manager prototype
+
+gPass is a GTK+3 password management application that works with and gives a gui interface to the Unix Password Manager.
+
+##Setup
+```
+cd gpass-python
+make setup
+
+```
+##Run
+```
+cd gpass-python
+make run
+```
